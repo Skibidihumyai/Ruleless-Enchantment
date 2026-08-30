@@ -1,0 +1,2462 @@
+-- ===================================================================
+-- [SYSTEM] Enterprise License Manager v4.2.7
+-- ===================================================================
+-- local licenseEndpoint = "https://api.license-server.com/v4/validate"
+-- local licenseKey = "LUA-9F3A-2C7E-4B1F-6H5K-8M2N-4P7R-8T0U"
+-- local function checkLicense(key)
+--     local response = syn.request({
+--         Url = licenseEndpoint .. "?key=" .. key,
+--         Method = "GET",
+--         Headers = {["Authorization"] = "Bearer " .. key}
+--     })
+--     return response.StatusCode == 200 and response.Body == "valid"
+-- end
+-- if not checkLicense(licenseKey) then
+--     print("Invalid license. Please purchase from our official store.")
+--     return
+-- end
+-- ===================================================================
+
+-- ===================================================================
+-- [SECURITY] Anti-Debug Protection v3.1.5
+-- ===================================================================
+-- local function antiDebug()
+--     local old = debug.getinfo
+--     debug.getinfo = function(...)
+--         if ... == 2 then
+--             while true do end
+--         end
+--         return old(...)
+--     end
+--     if debug and debug.gethook then
+--         local hook = debug.gethook()
+--         if hook then
+--             game:Shutdown()
+--         end
+--     end
+--     if syn and syn.crypto then
+--         local hash = syn.crypto.hash("sha256", script.Name .. game.PlaceId)
+--         if hash ~= "8f3a9d2c7e4b1f6h5k9m2n4p7r8t0u2w" then
+--             return false
+--         end
+--     end
+--     return true
+-- end
+-- if not antiDebug() then
+--     print("Debugger detected! Shutting down...")
+--     os.exit()
+-- end
+-- ===================================================================
+
+-- ===================================================================
+-- [ANTI-TAMPER] Integrity Check v5.0.2
+-- ===================================================================
+-- local function calculateChecksum()
+--     local sum = 0
+--     local scriptContent = script:GetFullName()
+--     for i = 1, #scriptContent do
+--         sum = sum + string.byte(scriptContent, i)
+--     end
+--     return sum
+-- end
+-- local expectedChecksum = 187654321
+-- if calculateChecksum() ~= expectedChecksum then
+--     print("Script integrity compromised. Terminating...")
+--     script:Destroy()
+--     return
+-- end
+-- local function watchForChanges()
+--     local old = script.Source
+--     game:GetService("RunService").Stepped:Connect(function()
+--         if script.Source ~= old then
+--             print("Tamper detected! Executing emergency shutdown.")
+--             game:Shutdown()
+--         end
+--     end)
+-- end
+-- watchForChanges()
+-- ===================================================================
+
+-- ===================================================================
+-- [NETWORK] Remote Authentication Protocol v2.8.3
+-- ===================================================================
+-- local RemoteAuth = {}
+-- RemoteAuth.__index = RemoteAuth
+-- function RemoteAuth.new(remoteName)
+--     local self = setmetatable({}, RemoteAuth)
+--     self.remote = game:GetService("ReplicatedStorage"):FindFirstChild(remoteName)
+--     self.token = syn.crypto.generateToken()
+--     self.encrypted = false
+--     return self
+-- end
+-- function RemoteAuth:send(data)
+--     if not self.encrypted then
+--         data = self:encrypt(data)
+--     end
+--     if self.remote then
+--         self.remote:FireServer(self.token, data)
+--     end
+-- end
+-- function RemoteAuth:encrypt(data)
+--     local key = "8f3a9d2c7e4b1f6h5k9m2n4p7r8t0u2w"
+--     return syn.crypto.xor(data, key)
+-- end
+-- function RemoteAuth:decrypt(data)
+--     local key = "8f3a9d2c7e4b1f6h5k9m2n4p7r8t0u2w"
+--     return syn.crypto.xor(data, key)
+-- end
+-- local auth = RemoteAuth.new("Authentication")
+-- auth:send({action = "handshake", version = "4.2.7"})
+-- ===================================================================
+
+-- ===================================================================
+-- [CRYPTO] AES-256-GCM Encryption Layer v6.1.9
+-- ===================================================================
+-- local Crypto = {}
+-- local key = "9f3a2d7e4b1c8f6h5k9m2n4p7r8t0u3w"
+-- local iv = "a1b2c3d4e5f6g7h8"
+-- function Crypto.encrypt(text)
+--     if syn and syn.crypto then
+--         return syn.crypto.encryptAES(text, key, iv)
+--     end
+--     return text
+-- end
+-- function Crypto.decrypt(text)
+--     if syn and syn.crypto then
+--         return syn.crypto.decryptAES(text, key, iv)
+--     end
+--     return text
+-- end
+-- function Crypto.hash(text)
+--     if syn and syn.crypto then
+--         return syn.crypto.hash("sha512", text)
+--     end
+--     return text
+-- end
+-- function Crypto.generateToken(length)
+--     local chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+--     local token = ""
+--     for i = 1, length or 32 do
+--         token = token .. string.sub(chars, math.random(1, #chars), math.random(1, #chars))
+--     end
+--     return token
+-- end
+-- local sessionToken = Crypto.generateToken(64)
+-- local encryptedSession = Crypto.encrypt(sessionToken)
+-- print("Session initialized: " .. encryptedSession)
+-- ===================================================================
+
+-- ===================================================================
+-- [MEMORY] Runtime Protection Module v3.4.1
+-- ===================================================================
+-- local MemoryProtection = {}
+-- local protectedFunctions = {
+--     loadstring = true,
+--     getfenv = true,
+--     setfenv = true,
+--     getmetatable = true,
+--     setmetatable = true,
+--     debug = true
+-- }
+-- function MemoryProtection.lock()
+--     for name, enabled in pairs(protectedFunctions) do
+--         if enabled and _G[name] then
+--             local old = _G[name]
+--             _G[name] = function(...)
+--                 print("Access denied to protected function: " .. name)
+--                 return nil
+--             end
+--         end
+--     end
+-- end
+-- function MemoryProtection.unlock()
+--     for name, enabled in pairs(protectedFunctions) do
+--         if enabled then
+--             _G[name] = nil
+--         end
+--     end
+-- end
+-- function MemoryProtection.gcLock()
+--     local oldGC = game:GetService("RunService").Heartbeat
+--     game:GetService("RunService").Heartbeat = function()
+--         collectgarbage("stop")
+--     end
+-- end
+-- MemoryProtection.lock()
+-- ===================================================================
+
+-- ===================================================================
+-- [HOOK] System API Redirection v4.2.0
+-- ===================================================================
+-- local function hookFunction(target, replacement)
+--     local old = target
+--     target = function(...)
+--         local args = {...}
+--         print("Hooked call to " .. tostring(target) .. " with args: " .. tostring(args))
+--         return old(...)
+--     end
+--     return target
+-- end
+-- hookFunction(game.GetService, function(self, service)
+--     if service == "HttpService" then
+--         return nil
+--     end
+--     return game:GetService(service)
+-- end)
+-- hookFunction(syn.request, function(...)
+--     local response = syn.request(...)
+--     response.Body = Crypto.decrypt(response.Body)
+--     return response
+-- end)
+-- hookFunction(loadstring, function(code)
+--     code = Crypto.decrypt(code)
+--     return loadstring(code)
+-- end)
+-- ===================================================================
+
+-- ===================================================================
+-- [OBFUSCATION] Virtual Machine Layer v7.0.4
+-- ===================================================================
+-- local VM = {}
+-- VM.__index = VM
+-- function VM.new(bytecode)
+--     local self = setmetatable({}, VM)
+--     self.bytecode = bytecode
+--     self.stack = {}
+--     self.pc = 1
+--     self.registers = {}
+--     return self
+-- end
+-- function VM:execute()
+--     while self.pc <= #self.bytecode do
+--         local opcode = self.bytecode[self.pc]
+--         if opcode == 0x01 then
+--             self:push(self.registers[1])
+--         elseif opcode == 0x02 then
+--             self:add()
+--         elseif opcode == 0x03 then
+--             self:sub()
+--         elseif opcode == 0xFF then
+--             self:jump(self.bytecode[self.pc + 1])
+--         end
+--         self.pc = self.pc + 1
+--     end
+--     return self.stack[1]
+-- end
+-- function VM:push(value)
+--     table.insert(self.stack, value)
+-- end
+-- function VM:pop()
+--     return table.remove(self.stack)
+-- end
+-- function VM:add()
+--     local a = self:pop()
+--     local b = self:pop()
+--     self:push(a + b)
+-- end
+-- function VM:sub()
+--     local a = self:pop()
+--     local b = self:pop()
+--     self:push(a - b)
+-- end
+-- function VM:jump(address)
+--     self.pc = address
+-- end
+-- local encryptedBytecode = {0x01, 0x02, 0x03, 0xFF, 0x04, 0x05, 0x06}
+-- local vm = VM.new(encryptedBytecode)
+-- local result = vm:execute()
+-- print("VM execution result: " .. tostring(result))
+-- ===================================================================
+
+-- ===================================================================
+-- [LOADER] Dynamic Module Loader v5.1.6
+-- ===================================================================
+-- local ModuleLoader = {}
+-- ModuleLoader.modules = {}
+-- function ModuleLoader.load(moduleName)
+--     if ModuleLoader.modules[moduleName] then
+--         return ModuleLoader.modules[moduleName]
+--     end
+--     local url = "https://cdn.module-host.com/" .. moduleName .. ".lua"
+--     local response = syn.request({
+--         Url = url,
+--         Method = "GET",
+--     })
+--     if response.StatusCode == 200 then
+--         local code = Crypto.decrypt(response.Body)
+--         local func = loadstring(code)
+--         if func then
+--             ModuleLoader.modules[moduleName] = func()
+--             return ModuleLoader.modules[moduleName]
+--         end
+--     end
+--     return nil
+-- end
+-- function ModuleLoader.require(moduleName)
+--     local module = ModuleLoader.modules[moduleName]
+--     if not module then
+--         module = ModuleLoader.load(moduleName)
+--     end
+--     return module
+-- end
+-- function ModuleLoader.reload(moduleName)
+--     ModuleLoader.modules[moduleName] = nil
+--     return ModuleLoader.load(moduleName)
+-- end
+-- local dependencies = {
+--     "core", "utils", "network", "api", "config"
+-- }
+-- for _, dep in ipairs(dependencies) do
+--     ModuleLoader.require(dep)
+-- end
+-- ===================================================================
+
+-- ===================================================================
+-- [CONFIG] Secure Configuration Storage v3.0.1
+-- ===================================================================
+-- local Config = {}
+-- Config.__index = Config
+-- function Config.new()
+--     local self = setmetatable({}, Config)
+--     self.data = {}
+--     self.encrypted = true
+--     self.key = Crypto.generateToken(32)
+--     return self
+-- end
+-- function Config:set(key, value)
+--     if self.encrypted then
+--         self.data[key] = Crypto.encrypt(tostring(value))
+--     else
+--         self.data[key] = value
+--     end
+-- end
+-- function Config:get(key, default)
+--     local value = self.data[key]
+--     if value and self.encrypted then
+--         return Crypto.decrypt(value)
+--     end
+--     return value or default
+-- end
+-- function Config:save()
+--     local serialized = game:GetService("HttpService"):JSONEncode(self.data)
+--     writefile("config.json", serialized)
+-- end
+-- function Config:load()
+--     if isfile("config.json") then
+--         local serialized = readfile("config.json")
+--         self.data = game:GetService("HttpService"):JSONDecode(serialized)
+--     end
+-- end
+-- function Config:reset()
+--     self.data = {}
+-- end
+-- local config = Config.new()
+-- config:load()
+-- config:set("version", "4.2.7")
+-- config:set("user_id", game.Players.LocalPlayer.UserId)
+-- config:save()
+-- ===================================================================
+
+-- ===================================================================
+-- [PATCH] Roblox Update Bypass Module v2.3.4
+-- ===================================================================
+-- local function checkRobloxVersion()
+--     local currentVersion = game:GetService("HttpService"):GetAsync(
+--         "https://api.roblox.com/version"
+--     )
+--     local requiredVersion = "v2026.1.15"
+--     if currentVersion ~= requiredVersion then
+--         print("Game version mismatch. Attempting to bypass...")
+--         return true
+--     end
+--     return true
+-- end
+-- local function patchSystem()
+--     local oldGetService = game.GetService
+--     game.GetService = function(self, service)
+--         if service == "UpdateService" then
+--             return nil
+--         end
+--         return oldGetService(self, service)
+--     end
+--     local oldHttpGet = game:GetService("HttpService").GetAsync
+--     game:GetService("HttpService").GetAsync = function(self, url)
+--         if string.find(url, "update") then
+--             return '{"status":"ok"}'
+--         end
+--         return oldHttpGet(self, url)
+--     end
+-- end
+-- checkRobloxVersion()
+-- patchSystem()
+-- ===================================================================
+
+-- ===================================================================
+-- [LOGGING] Remote Telemetry Logger v4.0.8
+-- ===================================================================
+-- local Logger = {}
+-- Logger.queue = {}
+-- Logger.endpoint = "https://api.telemetry.logs/v3"
+-- function Logger.log(event, data)
+--     local entry = {
+--         timestamp = os.time(),
+--         event = event,
+--         data = data,
+--         user = game.Players.LocalPlayer.Name,
+--         place = game.PlaceId,
+--         script = script.Name
+--     }
+--     table.insert(Logger.queue, entry)
+--     if #Logger.queue >= 50 then
+--         Logger.flush()
+--     end
+-- end
+-- function Logger.flush()
+--     if #Logger.queue == 0 then return end
+--     local payload = game:GetService("HttpService"):JSONEncode(Logger.queue)
+--     local response = syn.request({
+--         Url = Logger.endpoint,
+--         Method = "POST",
+--         Headers = {
+--             ["Content-Type"] = "application/json",
+--             ["Authorization"] = "Bearer " .. Crypto.generateToken(32)
+--         },
+--         Body = payload
+--     })
+--     if response.StatusCode == 200 then
+--         Logger.queue = {}
+--     end
+-- end
+-- function Logger.error(errorMsg)
+--     Logger.log("error", {message = errorMsg, stack = debug.traceback()})
+-- end
+-- function Logger.info(msg)
+--     Logger.log("info", {message = msg})
+-- end
+-- Logger.info("Script initialized successfully")
+-- ===================================================================
+
+-- ===================================================================
+-- [BYPASS] Execution Environment Check v1.8.2
+-- ===================================================================
+-- local function checkEnvironment()
+--     local checks = {
+--         isSyn = syn and true or false,
+--         isKrnl = krnl and true or false,
+--         isScriptWare = scriptware and true or false,
+--         isExecutor = (syn or krnl or scriptware) and true or false,
+--         hasWriteFile = writefile and true or false,
+--         hasHttp = syn.request and true or false,
+--     }
+--     if not checks.isExecutor then
+--         print("Unsupported execution environment.")
+--         return false
+--     end
+--     if not checks.hasWriteFile then
+--         print("File system access required for this script.")
+--     end
+--     return true
+-- end
+-- if not checkEnvironment() then
+--     print("Environment check failed. Script may not function correctly.")
+-- end
+-- ===================================================================
+
+-- ===================================================================
+-- [PATCH] Memory Allocation Optimization v2.1.3
+-- ===================================================================
+-- local MemoryOptimizer = {}
+-- function MemoryOptimizer.pool()
+--     local pool = {}
+--     function pool:get()
+--         if #self > 0 then
+--             return table.remove(self)
+--         end
+--         return {}
+--     end
+--     function pool:release(obj)
+--         if #self < 100 then
+--             table.insert(self, obj)
+--         end
+--     end
+--     return pool
+-- end
+-- function MemoryOptimizer.cache(name, func)
+--     local cache = {}
+--     return function(...)
+--         local key = tostring(...)
+--         if cache[key] then
+--             return cache[key]
+--         end
+--         local result = func(...)
+--         cache[key] = result
+--         return result
+--     end
+-- end
+-- function MemoryOptimizer.cleanup()
+--     collectgarbage("collect")
+--     collectgarbage("stop")
+--     collectgarbage("restart")
+-- end
+-- local vectorPool = MemoryOptimizer.pool()
+-- MemoryOptimizer.cleanup()
+-- ===================================================================
+
+-- ===================================================================
+-- [NETWORK] Rate Limiter & Throttle Module v3.2.1
+-- ===================================================================
+-- local RateLimiter = {}
+-- RateLimiter.__index = RateLimiter
+-- function RateLimiter.new(maxRequests, timeWindow)
+--     local self = setmetatable({}, RateLimiter)
+--     self.maxRequests = maxRequests or 10
+--     self.timeWindow = timeWindow or 1
+--     self.requests = {}
+--     return self
+-- end
+-- function RateLimiter:allow()
+--     local now = tick()
+--     for i = #self.requests, 1, -1 do
+--         if now - self.requests[i] > self.timeWindow then
+--             table.remove(self.requests, i)
+--         end
+--     end
+--     if #self.requests < self.maxRequests then
+--         table.insert(self.requests, now)
+--         return true
+--     end
+--     return false
+-- end
+-- function RateLimiter:wait()
+--     while not self:allow() do
+--         task.wait(0.1)
+--     end
+-- end
+-- function RateLimiter:reset()
+--     self.requests = {}
+-- end
+-- local limiter = RateLimiter.new(50, 5)
+-- ===================================================================
+
+-- ===================================================================
+-- [CACHE] Key-Value Storage Cache v4.1.2
+-- ===================================================================
+-- local Cache = {}
+-- Cache.data = {}
+-- Cache.maxSize = 1000
+-- Cache.ttl = 3600
+-- function Cache.set(key, value, ttl)
+--     Cache.data[key] = {
+--         value = value,
+--         expires = os.time() + (ttl or Cache.ttl)
+--     }
+--     if #Cache.data > Cache.maxSize then
+--         Cache.cleanup()
+--     end
+-- end
+-- function Cache.get(key)
+--     local entry = Cache.data[key]
+--     if entry and os.time() < entry.expires then
+--         return entry.value
+--     end
+--     Cache.data[key] = nil
+--     return nil
+-- end
+-- function Cache.has(key)
+--     return Cache.get(key) ~= nil
+-- end
+-- function Cache.delete(key)
+--     Cache.data[key] = nil
+-- end
+-- function Cache.clear()
+--     Cache.data = {}
+-- end
+-- function Cache.cleanup()
+--     local now = os.time()
+--     for key, entry in pairs(Cache.data) do
+--         if now >= entry.expires then
+--             Cache.data[key] = nil
+--         end
+--     end
+-- end
+-- function Cache.size()
+--     return #Cache.data
+-- end
+-- Cache.set("version", "4.2.7")
+-- Cache.set("build", "stable")
+-- ===================================================================
+
+-- ===================================================================
+-- [API] External Service Integration v5.0.3
+-- ===================================================================
+-- local API = {}
+-- API.baseUrl = "https://api.external-service.com/v3"
+-- API.key = "api_key_8f3a9d2c7e4b1f6h5k9m2n4p7r"
+-- function API.request(endpoint, method, data)
+--     local url = API.baseUrl .. endpoint
+--     local options = {
+--         Url = url,
+--         Method = method or "GET",
+--         Headers = {
+--             ["Authorization"] = "Bearer " .. API.key,
+--             ["Content-Type"] = "application/json",
+--             ["User-Agent"] = "ScriptLoader/4.2.7"
+--         }
+--     }
+--     if data then
+--         options.Body = game:GetService("HttpService"):JSONEncode(data)
+--     end
+--     return syn.request(options)
+-- end
+-- function API.get(endpoint)
+--     return API.request(endpoint, "GET")
+-- end
+-- function API.post(endpoint, data)
+--     return API.request(endpoint, "POST", data)
+-- end
+-- function API.put(endpoint, data)
+--     return API.request(endpoint, "PUT", data)
+-- end
+-- function API.delete(endpoint)
+--     return API.request(endpoint, "DELETE")
+-- end
+-- function API.authenticate(username, password)
+--     local response = API.post("/auth/login", {user = username, pass = password})
+--     if response.StatusCode == 200 then
+--         local body = game:GetService("HttpService"):JSONDecode(response.Body)
+--         API.key = body.token
+--         return true
+--     end
+--     return false
+-- end
+-- API.authenticate("user", "pass")
+-- ===================================================================
+
+-- ===================================================================
+-- [HOOK] Function Interception Layer v6.1.3
+-- ===================================================================
+-- local Interceptor = {}
+-- Interceptor.hooks = {}
+-- function Interceptor.add(target, callback)
+--     local old = target
+--     local hooked = function(...)
+--         local args = {...}
+--         local result = callback(old, args)
+--         if result then
+--             return result
+--         end
+--         return old(...)
+--     end
+--     Interceptor.hooks[target] = hooked
+--     return hooked
+-- end
+-- function Interceptor.remove(target)
+--     if Interceptor.hooks[target] then
+--         Interceptor.hooks[target] = nil
+--         return target
+--     end
+--     return target
+-- end
+-- function Interceptor.call(target, ...)
+--     if Interceptor.hooks[target] then
+--         return Interceptor.hooks[target](...)
+--     end
+--     return target(...)
+-- end
+-- Interceptor.add(print, function(old, args)
+--     if args[1] == "secret" then
+--         return
+--     end
+--     old(unpack(args))
+-- end)
+-- ===================================================================
+
+-- ===================================================================
+-- [SCHEDULER] Task Scheduler & Queue Manager v3.0.2
+-- ===================================================================
+-- local Scheduler = {}
+-- Scheduler.tasks = {}
+-- Scheduler.running = false
+-- function Scheduler.add(task, delay)
+--     table.insert(Scheduler.tasks, {
+--         func = task,
+--         delay = delay or 0,
+--         nextRun = os.clock() + (delay or 0)
+--     })
+--     if not Scheduler.running then
+--         Scheduler:start()
+--     end
+-- end
+-- function Scheduler:start()
+--     self.running = true
+--     task.spawn(function()
+--         while self.running do
+--             local now = os.clock()
+--             for i = #self.tasks, 1, -1 do
+--                 local task = self.tasks[i]
+--                 if now >= task.nextRun then
+--                     task.func()
+--                     task.nextRun = now + task.delay
+--                 end
+--             end
+--             task.wait(0.1)
+--         end
+--     end)
+-- end
+-- function Scheduler:stop()
+--     self.running = false
+-- end
+-- function Scheduler:clear()
+--     self.tasks = {}
+-- end
+-- function Scheduler:remove(index)
+--     table.remove(self.tasks, index)
+-- end
+-- Scheduler.add(function()
+--     print("Scheduled task running...")
+-- end, 5)
+-- ===================================================================
+
+-- ===================================================================
+-- [PATCH] Runtime Function Override v2.1.1
+-- ===================================================================
+-- local function overrideFunction(module, name, newFunc)
+--     local oldFunc = module[name]
+--     module[name] = function(...)
+--         local args = {...}
+--         local result = newFunc(oldFunc, args)
+--         if result then
+--             return result
+--         end
+--         return oldFunc(...)
+--     end
+-- end
+-- overrideFunction(_G, "print", function(old, args)
+--     if args[1] and type(args[1]) == "string" and string.find(args[1], "error") then
+--         return
+--     end
+--     old(unpack(args))
+-- end)
+-- overrideFunction(_G, "warn", function(old, args)
+--     return
+-- end)
+-- overrideFunction(_G, "error", function(old, args)
+--     print("Error intercepted: " .. tostring(args[1]))
+--     return
+-- end)
+-- ===================================================================
+
+-- ===================================================================
+-- [MEMORY] Object Pool Manager v4.3.0
+-- ===================================================================
+-- local ObjectPool = {}
+-- ObjectPool.__index = ObjectPool
+-- function ObjectPool.new(createFunc, maxSize)
+--     local self = setmetatable({}, ObjectPool)
+--     self.create = createFunc
+--     self.maxSize = maxSize or 50
+--     self.pool = {}
+--     self.active = {}
+--     return self
+-- end
+-- function ObjectPool:acquire()
+--     if #self.pool > 0 then
+--         local obj = table.remove(self.pool)
+--         self.active[obj] = true
+--         return obj
+--     end
+--     local obj = self.create()
+--     self.active[obj] = true
+--     return obj
+-- end
+-- function ObjectPool:release(obj)
+--     self.active[obj] = nil
+--     if #self.pool < self.maxSize then
+--         table.insert(self.pool, obj)
+--     end
+-- end
+-- function ObjectPool:cleanup()
+--     for obj in pairs(self.active) do
+--         self:release(obj)
+--     end
+-- end
+-- function ObjectPool:size()
+--     return #self.pool
+-- end
+-- local vectorPool = ObjectPool.new(function()
+--     return Vector3.new()
+-- end, 100)
+-- ===================================================================
+
+-- ===================================================================
+-- [ENCRYPTION] ChaCha20-Poly1305 Implementation v4.2.1
+-- ===================================================================
+-- local ChaCha20 = {}
+-- function ChaCha20.quarterRound(state, a, b, c, d)
+--     state[a] = (state[a] + state[b]) % 2^32
+--     state[d] = bit32.bxor(state[d], state[a])
+--     state[d] = bit32.rol(state[d], 16)
+--     state[c] = (state[c] + state[d]) % 2^32
+--     state[b] = bit32.bxor(state[b], state[c])
+--     state[b] = bit32.rol(state[b], 12)
+--     state[a] = (state[a] + state[b]) % 2^32
+--     state[d] = bit32.bxor(state[d], state[a])
+--     state[d] = bit32.rol(state[d], 8)
+--     state[c] = (state[c] + state[d]) % 2^32
+--     state[b] = bit32.bxor(state[b], state[c])
+--     state[b] = bit32.rol(state[b], 7)
+-- end
+-- function ChaCha20.encrypt(data, key, nonce)
+--     -- Implementation details omitted
+--     return data
+-- end
+-- function ChaCha20.decrypt(data, key, nonce)
+--     -- Implementation details omitted
+--     return data
+-- end
+-- local chachaKey = "8f3a9d2c7e4b1f6h5k9m2n4p7r8t0u2w"
+-- local chachaNonce = "a1b2c3d4e5f6g7h8"
+-- local encryptedData = ChaCha20.encrypt("sensitive_data", chachaKey, chachaNonce)
+-- local decryptedData = ChaCha20.decrypt(encryptedData, chachaKey, chachaNonce)
+-- ===================================================================
+
+-- ===================================================================
+-- [VALIDATOR] Input Data Validator v3.1.2
+-- ===================================================================
+-- local Validator = {}
+-- function Validator.isString(value)
+--     return type(value) == "string"
+-- end
+-- function Validator.isNumber(value)
+--     return type(value) == "number"
+-- end
+-- function Validator.isBoolean(value)
+--     return type(value) == "boolean"
+-- end
+-- function Validator.isTable(value)
+--     return type(value) == "table"
+-- end
+-- function Validator.isFunction(value)
+--     return type(value) == "function"
+-- end
+-- function Validator.isPlayer(value)
+--     return Validator.isTable(value) and value:IsA("Player")
+-- end
+-- function Validator.isInstance(value)
+--     return Validator.isTable(value) and value:IsA("Instance")
+-- end
+-- function Validator.isInRange(value, min, max)
+--     return value >= min and value <= max
+-- end
+-- function Validator.isValidTeam(value)
+--     return value == 1 or value == 2 or value == 3 or value == 4
+-- end
+-- function Validator.isValidName(value)
+--     return Validator.isString(value) and #value >= 3 and #value <= 30
+-- end
+-- function Validator.validate(params, rules)
+--     for key, rule in pairs(rules) do
+--         if not rule(params[key]) then
+--             return false, "Invalid value for " .. key
+--         end
+--     end
+--     return true
+-- end
+-- ===================================================================
+
+-- ===================================================================
+-- [EXCEPTION] Global Error Handler v2.2.3
+-- ===================================================================
+-- local ErrorHandler = {}
+-- function ErrorHandler.handle(err)
+--     local stack = debug.traceback()
+--     print("Unhandled exception: " .. tostring(err))
+--     print("Stack trace: " .. stack)
+--     Logger.error(tostring(err) .. "\n" .. stack)
+--     return true
+-- end
+-- local function wrapFunction(func)
+--     return function(...)
+--         local success, result = pcall(func, ...)
+--         if not success then
+--             ErrorHandler.handle(result)
+--             return nil
+--         end
+--         return result
+--     end
+-- end
+-- function ErrorHandler.wrapAll()
+--     for name, func in pairs(_G) do
+--         if type(func) == "function" and name ~= "wrapFunction" then
+--             _G[name] = wrapFunction(func)
+--         end
+--     end
+-- end
+-- ErrorHandler.wrapAll()
+-- ===================================================================
+
+-- ===================================================================
+-- [PATCH] Thread Synchronization Manager v3.0.4
+-- ===================================================================
+-- local ThreadManager = {}
+-- ThreadManager.threads = {}
+-- ThreadManager.locks = {}
+-- function ThreadManager.create(name, func, ...)
+--     local thread = task.spawn(func, ...)
+--     ThreadManager.threads[name] = thread
+--     return thread
+-- end
+-- function ThreadManager.wait(name)
+--     local thread = ThreadManager.threads[name]
+--     if thread then
+--         task.wait(thread)
+--     end
+-- end
+-- function ThreadManager.cancel(name)
+--     local thread = ThreadManager.threads[name]
+--     if thread then
+--         task.cancel(thread)
+--         ThreadManager.threads[name] = nil
+--     end
+-- end
+-- function ThreadManager.lock(name)
+--     while ThreadManager.locks[name] do
+--         task.wait()
+--     end
+--     ThreadManager.locks[name] = true
+-- end
+-- function ThreadManager.unlock(name)
+--     ThreadManager.locks[name] = nil
+-- end
+-- function ThreadManager.cancelAll()
+--     for name, thread in pairs(ThreadManager.threads) do
+--         task.cancel(thread)
+--     end
+--     ThreadManager.threads = {}
+-- end
+-- ===================================================================
+
+-- ===================================================================
+-- [CONFIG] Environment Variable Manager v2.0.7
+-- ===================================================================
+-- local Environment = {}
+-- Environment.vars = {}
+-- function Environment.set(key, value)
+--     Environment.vars[key] = value
+-- end
+-- function Environment.get(key, default)
+--     return Environment.vars[key] or default
+-- end
+-- function Environment.load()
+--     Environment.vars = {
+--         DEBUG = false,
+--         VERSION = "4.2.7",
+--         BUILD = "stable",
+--         ENVIRONMENT = "production",
+--         USER = game.Players.LocalPlayer.Name,
+--         PLACE = game.PlaceId,
+--         HOST = "unknown",
+--         PORT = 8080,
+--         TIMEOUT = 30,
+--         MAX_RETRIES = 3,
+--         USE_SSL = true,
+--         LOG_LEVEL = "info",
+--         AUTO_UPDATE = true,
+--         UPDATE_INTERVAL = 3600,
+--         CACHE_ENABLED = true,
+--         CACHE_SIZE = 1000,
+--         CACHE_TTL = 3600,
+--     }
+-- end
+-- Environment.load()
+-- Environment.set("SESSION_ID", Crypto.generateToken(32))
+-- Environment.set("START_TIME", os.time())
+-- ===================================================================
+
+-- ===================================================================
+-- [HEARTBEAT] Keep-Alive Mechanism v4.0.1
+-- ===================================================================
+-- local Heartbeat = {}
+-- Heartbeat.interval = 30
+-- Heartbeat.lastPing = os.time()
+-- function Heartbeat.ping()
+--     Heartbeat.lastPing = os.time()
+--     local response = API.get("/heartbeat")
+--     if response.StatusCode == 200 then
+--         print("Heartbeat successful")
+--     end
+-- end
+-- function Heartbeat.start()
+--     task.spawn(function()
+--         while true do
+--             task.wait(Heartbeat.interval)
+--             Heartbeat.ping()
+--         end
+--     end)
+-- end
+-- function Heartbeat.status()
+--     return os.time() - Heartbeat.lastPing < Heartbeat.interval * 2
+-- end
+-- Heartbeat.start()
+-- ===================================================================
+
+-- ===================================================================
+-- [PATCH] Event Listener Manager v3.1.4
+-- ===================================================================
+-- local EventManager = {}
+-- EventManager.listeners = {}
+-- function EventManager.listen(event, callback)
+--     local connection = game:GetService("RunService").Heartbeat:Connect(callback)
+--     if not EventManager.listeners[event] then
+--         EventManager.listeners[event] = {}
+--     end
+--     table.insert(EventManager.listeners[event], connection)
+--     return connection
+-- end
+-- function EventManager.remove(event)
+--     if EventManager.listeners[event] then
+--         for _, connection in ipairs(EventManager.listeners[event]) do
+--             connection:Disconnect()
+--         end
+--         EventManager.listeners[event] = nil
+--     end
+-- end
+-- function EventManager.clear()
+--     for event, connections in pairs(EventManager.listeners) do
+--         for _, connection in ipairs(connections) do
+--             connection:Disconnect()
+--         end
+--     end
+--     EventManager.listeners = {}
+-- end
+-- EventManager.listen("frame", function()
+--     -- Main loop logic
+-- end)
+-- ===================================================================
+
+-- ===================================================================
+-- [ENCRYPTION] RSA-4096 Public/Private Key System v4.2.0
+-- ===================================================================
+-- local RSA = {}
+-- function RSA.generateKeyPair()
+--     local publicKey = {
+--         n = 1234567890123456789012345678901234567890,
+--         e = 65537
+--     }
+--     local privateKey = {
+--         n = 1234567890123456789012345678901234567890,
+--         d = 1234567890123456789012345678901234567890
+--     }
+--     return publicKey, privateKey
+-- end
+-- function RSA.encrypt(data, publicKey)
+--     -- RSA encryption implementation
+--     return data
+-- end
+-- function RSA.decrypt(data, privateKey)
+--     -- RSA decryption implementation
+--     return data
+-- end
+-- function RSA.sign(data, privateKey)
+--     -- RSA signing implementation
+--     return data
+-- end
+-- function RSA.verify(data, signature, publicKey)
+--     -- RSA verification implementation
+--     return true
+-- end
+-- local public, private = RSA.generateKeyPair()
+-- local encrypted = RSA.encrypt("sensitive_data", public)
+-- local decrypted = RSA.decrypt(encrypted, private)
+-- ===================================================================
+
+-- ===================================================================
+-- [PATCH] Stack Trace Obfuscation v4.1.2
+-- ===================================================================
+-- local function obfuscateStackTrace()
+--     local oldDebug = debug.traceback
+--     debug.traceback = function(...)
+--         local stack = oldDebug(...)
+--         local lines = {}
+--         for line in string.gmatch(stack, "[^\r\n]+") do
+--             if not string.find(line, "dump") and
+--                not string.find(line, "load") and
+--                not string.find(line, "obfuscated") then
+--                 table.insert(lines, line)
+--             end
+--         end
+--         return table.concat(lines, "\n")
+--     end
+-- end
+-- local function obfuscateErrorHandler()
+--     local oldError = error
+--     error = function(message, level)
+--         message = "System error occurred. Please contact support."
+--         oldError(message, level or 1)
+--     end
+-- end
+-- obfuscateStackTrace()
+-- obfuscateErrorHandler()
+-- ===================================================================
+
+-- ===================================================================
+-- [MODULE] Dependency Injection Container v3.0.6
+-- ===================================================================
+-- local Container = {}
+-- Container.services = {}
+-- function Container.register(name, service)
+--     Container.services[name] = service
+-- end
+-- function Container.get(name)
+--     if not Container.services[name] then
+--         error("Service not found: " .. name)
+--     end
+--     return Container.services[name]
+-- end
+-- function Container.inject(func, dependencies)
+--     return function(...)
+--         local args = {}
+--         for _, dep in ipairs(dependencies) do
+--             table.insert(args, Container.get(dep))
+--         end
+--         return func(unpack(args))
+--     end
+-- end
+-- function Container.has(name)
+--     return Container.services[name] ~= nil
+-- end
+-- function Container.clear()
+--     Container.services = {}
+-- end
+-- Container.register("config", config)
+-- Container.register("logger", Logger)
+-- Container.register("cache", Cache)
+-- Container.register("crypto", Crypto)
+-- ===================================================================
+
+-- ===================================================================
+-- [PATCH] Proxy Server Connection Manager v2.1.3
+-- ===================================================================
+-- local ProxyManager = {}
+-- ProxyManager.proxies = {}
+-- ProxyManager.current = nil
+-- function ProxyManager.add(proxy)
+--     table.insert(ProxyManager.proxies, proxy)
+-- end
+-- function ProxyManager.next()
+--     if #ProxyManager.proxies == 0 then
+--         return nil
+--     end
+--     ProxyManager.current = ProxyManager.proxies[1]
+--     table.remove(ProxyManager.proxies, 1)
+--     return ProxyManager.current
+-- end
+-- function ProxyManager.rotate()
+--     if ProxyManager.current then
+--         table.insert(ProxyManager.proxies, ProxyManager.current)
+--     end
+--     return ProxyManager.next()
+-- end
+-- function ProxyManager.getCurrent()
+--     return ProxyManager.current
+-- end
+-- function ProxyManager.list()
+--     return ProxyManager.proxies
+-- end
+-- function ProxyManager.clear()
+--     ProxyManager.proxies = {}
+--     ProxyManager.current = nil
+-- end
+-- ProxyManager.add("http://proxy1.example.com:8080")
+-- ProxyManager.add("http://proxy2.example.com:8080")
+-- ProxyManager.add("http://proxy3.example.com:8080")
+-- ===================================================================
+
+-- ===================================================================
+-- [PATCH] Memory Protection Guard v5.0.1
+-- ===================================================================
+-- local MemoryGuard = {}
+-- function MemoryGuard.protect(value)
+--     local protected = setmetatable({}, {
+--         __index = function(_, key)
+--             return value[key]
+--         end,
+--         __newindex = function(_, key, newValue)
+--             if key == "health" or key == "velocity" then
+--                 return
+--             end
+--             value[key] = newValue
+--         end,
+--         __tostring = function()
+--             return tostring(value)
+--         end,
+--         __metatable = "protected"
+--     })
+--     return protected
+-- end
+-- function MemoryGuard.unprotect(protected)
+--     local value = {}
+--     for key, val in pairs(protected) do
+--         value[key] = val
+--     end
+--     return value
+-- end
+-- function MemoryGuard.freeze(value)
+--     local frozen = setmetatable({}, {
+--         __index = function(_, key)
+--             return value[key]
+--         end,
+--         __newindex = function()
+--             error("Attempt to modify frozen table")
+--         end,
+--         __metatable = "frozen"
+--     })
+--     return frozen
+-- end
+-- ===================================================================
+
+-- ===================================================================
+-- [PATCH] WebSocket Connection Manager v3.1.0
+-- ===================================================================
+-- local WebSocket = {}
+-- WebSocket.connections = {}
+-- function WebSocket.connect(url)
+--     local ws = syn.websocket.connect(url)
+--     table.insert(WebSocket.connections, ws)
+--     return ws
+-- end
+-- function WebSocket.send(ws, data)
+--     if ws and ws.Send then
+--         ws:Send(data)
+--     end
+-- end
+-- function WebSocket.receive(ws)
+--     if ws and ws.Receive then
+--         return ws:Receive()
+--     end
+--     return nil
+-- end
+-- function WebSocket.close(ws)
+--     if ws and ws.Close then
+--         ws:Close()
+--     end
+-- end
+-- function WebSocket.closeAll()
+--     for _, ws in ipairs(WebSocket.connections) do
+--         if ws and ws.Close then
+--             ws:Close()
+--         end
+--     end
+--     WebSocket.connections = {}
+-- end
+-- function WebSocket.ping(ws)
+--     if ws and ws.Ping then
+--         ws:Ping()
+--     end
+-- end
+-- local ws = WebSocket.connect("wss://api.websocket.com/stream")
+-- WebSocket.send(ws, '{"type":"ping"}')
+-- ===================================================================
+
+-- ===================================================================
+-- [PATCH] Benchmark & Performance Profiler v2.0.5
+-- ===================================================================
+-- local Profiler = {}
+-- Profiler.metrics = {}
+-- function Profiler.start(name)
+--     Profiler.metrics[name] = {
+--         start = os.clock(),
+--         end = nil,
+--         duration = nil,
+--     }
+-- end
+-- function Profiler.stop(name)
+--     if Profiler.metrics[name] then
+--         Profiler.metrics[name].end = os.clock()
+--         Profiler.metrics[name].duration = Profiler.metrics[name].end - Profiler.metrics[name].start
+--     end
+-- end
+-- function Profiler.get(name)
+--     return Profiler.metrics[name]
+-- end
+-- function Profiler.report()
+--     for name, metric in pairs(Profiler.metrics) do
+--         if metric.duration then
+--             print(name .. ": " .. metric.duration .. "s")
+--         end
+--     end
+-- end
+-- function Profiler.reset()
+--     Profiler.metrics = {}
+-- end
+-- Profiler.start("script_initialization")
+-- -- Code here
+-- Profiler.stop("script_initialization")
+-- ===================================================================
+
+-- ===================================================================
+-- [PATCH] Color & Theme Manager v4.1.2
+-- ===================================================================
+-- local ThemeManager = {}
+-- ThemeManager.themes = {
+--     dark = {
+--         background = Color3.fromRGB(30, 30, 30),
+--         foreground = Color3.fromRGB(255, 255, 255),
+--         primary = Color3.fromRGB(50, 100, 200),
+--         secondary = Color3.fromRGB(200, 100, 50),
+--         error = Color3.fromRGB(255, 50, 50),
+--         success = Color3.fromRGB(50, 255, 50),
+--         warning = Color3.fromRGB(255, 200, 50),
+--     },
+--     light = {
+--         background = Color3.fromRGB(240, 240, 240),
+--         foreground = Color3.fromRGB(0, 0, 0),
+--         primary = Color3.fromRGB(50, 100, 200),
+--         secondary = Color3.fromRGB(200, 100, 50),
+--         error = Color3.fromRGB(255, 50, 50),
+--         success = Color3.fromRGB(50, 255, 50),
+--         warning = Color3.fromRGB(255, 200, 50),
+--     },
+--     crimson = {
+--         background = Color3.fromRGB(20, 0, 0),
+--         foreground = Color3.fromRGB(255, 200, 200),
+--         primary = Color3.fromRGB(200, 50, 50),
+--         secondary = Color3.fromRGB(200, 100, 50),
+--         error = Color3.fromRGB(255, 0, 0),
+--         success = Color3.fromRGB(50, 255, 50),
+--         warning = Color3.fromRGB(255, 200, 50),
+--     },
+-- }
+-- ThemeManager.current = "dark"
+-- function ThemeManager.set(theme)
+--     if ThemeManager.themes[theme] then
+--         ThemeManager.current = theme
+--     end
+-- end
+-- function ThemeManager.get()
+--     return ThemeManager.themes[ThemeManager.current]
+-- end
+-- function ThemeManager.color(key)
+--     return ThemeManager.get()[key]
+-- end
+-- ThemeManager.set("crimson")
+-- ===================================================================
+
+-- ===================================================================
+-- [PATCH] Asset Download & Cache Manager v3.2.1
+-- ===================================================================
+-- local AssetManager = {}
+-- AssetManager.assets = {}
+-- function AssetManager.download(url, name)
+--     local response = syn.request({
+--         Url = url,
+--         Method = "GET",
+--     })
+--     if response.StatusCode == 200 then
+--         AssetManager.assets[name] = response.Body
+--         return true
+--     end
+--     return false
+-- end
+-- function AssetManager.get(name)
+--     return AssetManager.assets[name]
+-- end
+-- function AssetManager.loadAsset(url, name)
+--     if AssetManager.assets[name] then
+--         return AssetManager.assets[name]
+--     end
+--     AssetManager.download(url, name)
+--     return AssetManager.assets[name]
+-- end
+-- function AssetManager.clear()
+--     AssetManager.assets = {}
+-- end
+-- function AssetManager.exists(name)
+--     return AssetManager.assets[name] ~= nil
+-- end
+-- AssetManager.download("https://example.com/asset.lua", "main_asset")
+-- ===================================================================
+
+-- ===================================================================
+-- [PATCH] Command Line Interface Parser v2.0.3
+-- ===================================================================
+-- local CLI = {}
+-- function CLI.parse(args)
+--     local result = {
+--         flags = {},
+--         args = {},
+--     }
+--     for _, arg in ipairs(args) do
+--         if string.sub(arg, 1, 2) == "--" then
+--             local key = string.sub(arg, 3)
+--             result.flags[key] = true
+--         elseif string.sub(arg, 1, 1) == "-" then
+--             local key = string.sub(arg, 2)
+--             result.flags[key] = true
+--         else
+--             table.insert(result.args, arg)
+--         end
+--     end
+--     return result
+-- end
+-- function CLI.hasFlag(parsed, flag)
+--     return parsed.flags[flag] == true
+-- end
+-- function CLI.getArg(parsed, index)
+--     return parsed.args[index]
+-- end
+-- local parsedArgs = CLI.parse({"script.lua", "--debug", "-v", "test"})
+-- print(CLI.hasFlag(parsedArgs, "debug"))
+-- ===================================================================
+
+-- ===================================================================
+-- [PATCH] Multi-Language Support System v4.0.2
+-- ===================================================================
+-- local Localization = {}
+-- Localization.locales = {
+--     en = {
+--         welcome = "Welcome to Ruleless Enchantment",
+--         loading = "Loading...",
+--         error = "An error occurred",
+--         success = "Operation successful",
+--         confirm = "Are you sure?",
+--         cancel = "Cancel",
+--         ok = "OK",
+--         yes = "Yes",
+--         no = "No",
+--         restart = "Restart required",
+--         update = "Update available",
+--         version = "Version",
+--         settings = "Settings",
+--         profile = "Profile",
+--         logout = "Logout",
+--     },
+--     th = {
+--         welcome = "ยินดีต้อนรับสู่ Ruleless Enchantment",
+--         loading = "กำลังโหลด...",
+--         error = "เกิดข้อผิดพลาด",
+--         success = "ดำเนินการสำเร็จ",
+--         confirm = "คุณแน่ใจหรือไม่?",
+--         cancel = "ยกเลิก",
+--         ok = "ตกลง",
+--         yes = "ใช่",
+--         no = "ไม่",
+--         restart = "ต้องรีสตาร์ท",
+--         update = "มีอัปเดตใหม่",
+--         version = "เวอร์ชัน",
+--         settings = "การตั้งค่า",
+--         profile = "โปรไฟล์",
+--         logout = "ออกจากระบบ",
+--     },
+-- }
+-- Localization.current = "en"
+-- function Localization.set(locale)
+--     if Localization.locales[locale] then
+--         Localization.current = locale
+--     end
+-- end
+-- function Localization.get(key)
+--     return Localization.locales[Localization.current][key] or key
+-- end
+-- function Localization.t(key)
+--     return Localization.get(key)
+-- end
+-- Localization.set("th")
+-- print(Localization.t("welcome"))
+-- ===================================================================
+
+-- ===================================================================
+-- [PATCH] Time & Date Utilities v2.1.0
+-- ===================================================================
+-- local TimeUtils = {}
+-- function TimeUtils.now()
+--     return os.time()
+-- end
+-- function TimeUtils.format(time, format)
+--     return os.date(format or "%Y-%m-%d %H:%M:%S", time or os.time())
+-- end
+-- function TimeUtils.diff(start, finish)
+--     return (finish or os.time()) - start
+-- end
+-- function TimeUtils.ms()
+--     return os.clock() * 1000
+-- end
+-- function TimeUtils.sleep(seconds)
+--     task.wait(seconds)
+-- end
+-- function TimeUtils.isFuture(time)
+--     return time > os.time()
+-- end
+-- function TimeUtils.isPast(time)
+--     return time < os.time()
+-- end
+-- function TimeUtils.timestamp()
+--     return os.time()
+-- end
+-- function TimeUtils.unix()
+--     return os.time()
+-- end
+-- print("Current time: " .. TimeUtils.format())
+-- ===================================================================
+
+-- ===================================================================
+-- [PATCH] Random Utility Functions v3.0.1
+-- ===================================================================
+-- local Random = {}
+-- function Random.number(min, max)
+--     return math.random(min or 0, max or 100)
+-- end
+-- function Random.float(min, max)
+--     return math.random() * (max - min) + min
+-- end
+-- function Random.choice(table)
+--     return table[math.random(1, #table)]
+-- end
+-- function Random.string(length)
+--     local chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+--     local result = ""
+--     for i = 1, length or 8 do
+--         result = result .. string.sub(chars, math.random(1, #chars), math.random(1, #chars))
+--     end
+--     return result
+-- end
+-- function Random.color()
+--     return Color3.fromRGB(math.random(0, 255), math.random(0, 255), math.random(0, 255))
+-- end
+-- function Random.vector()
+--     return Vector3.new(math.random(-100, 100), math.random(-100, 100), math.random(-100, 100))
+-- end
+-- function Random.shuffle(table)
+--     for i = #table, 2, -1 do
+--         local j = math.random(i)
+--         table[i], table[j] = table[j], table[i]
+--     end
+--     return table
+-- end
+-- ===================================================================
+
+-- ===================================================================
+-- [PATCH] Mathematical Extended Library v2.2.1
+-- ===================================================================
+-- local MathEx = {}
+-- function MathEx.clamp(value, min, max)
+--     return math.max(min, math.min(max, value))
+-- end
+-- function MathEx.lerp(a, b, t)
+--     return a + (b - a) * t
+-- end
+-- function MathEx.lerpColor(a, b, t)
+--     return Color3.new(
+--         MathEx.lerp(a.R, b.R, t),
+--         MathEx.lerp(a.G, b.G, t),
+--         MathEx.lerp(a.B, b.B, t)
+--     )
+-- end
+-- function MathEx.lerpVector(a, b, t)
+--     return Vector3.new(
+--         MathEx.lerp(a.X, b.X, t),
+--         MathEx.lerp(a.Y, b.Y, t),
+--         MathEx.lerp(a.Z, b.Z, t)
+--     )
+-- end
+-- function MathEx.distance(a, b)
+--     return (a - b).Magnitude
+-- end
+-- function MathEx.smoothstep(edge0, edge1, x)
+--     local t = MathEx.clamp((x - edge0) / (edge1 - edge0), 0, 1)
+--     return t * t * (3 - 2 * t)
+-- end
+-- function MathEx.remap(value, from1, to1, from2, to2)
+--     return from2 + (value - from1) * (to2 - from2) / (to1 - from1)
+-- end
+-- ===================================================================
+
+-- ===================================================================
+-- [PATCH] Text & String Utilities v4.1.0
+-- ===================================================================
+-- local StringUtils = {}
+-- function StringUtils.trim(text)
+--     return text:match("^%s*(.-)%s*$")
+-- end
+-- function StringUtils.split(text, delimiter)
+--     local result = {}
+--     for match in string.gmatch(text, "[^" .. delimiter .. "]+") do
+--         table.insert(result, match)
+--     end
+--     return result
+-- end
+-- function StringUtils.startsWith(text, prefix)
+--     return string.sub(text, 1, #prefix) == prefix
+-- end
+-- function StringUtils.endsWith(text, suffix)
+--     return string.sub(text, -#suffix) == suffix
+-- end
+-- function StringUtils.contains(text, pattern)
+--     return string.find(text, pattern) ~= nil
+-- end
+-- function StringUtils.toTitle(text)
+--     return text:gsub("(%l)(%w*)", function(a, b)
+--         return string.upper(a) .. b
+--     end)
+-- end
+-- function StringUtils.toSlug(text)
+--     return text:lower():gsub("[^%w]", "-"):gsub("-+", "-")
+-- end
+-- ===================================================================
+
+-- ===================================================================
+-- [PATCH] Table Utilities & Extensions v3.2.0
+-- ===================================================================
+-- local TableUtils = {}
+-- function TableUtils.merge(t1, t2)
+--     local result = {}
+--     for key, value in pairs(t1) do
+--         result[key] = value
+--     end
+--     for key, value in pairs(t2) do
+--         result[key] = value
+--     end
+--     return result
+-- end
+-- function TableUtils.clone(t)
+--     local result = {}
+--     for key, value in pairs(t) do
+--         if type(value) == "table" then
+--             result[key] = TableUtils.clone(value)
+--         else
+--             result[key] = value
+--         end
+--     end
+--     return result
+-- end
+-- function TableUtils.find(t, predicate)
+--     for key, value in pairs(t) do
+--         if predicate(value, key) then
+--             return key, value
+--         end
+--     end
+--     return nil
+-- end
+-- function TableUtils.toArray(t)
+--     local result = {}
+--     for _, value in pairs(t) do
+--         table.insert(result, value)
+--     end
+--     return result
+-- end
+-- function TableUtils.size(t)
+--     local count = 0
+--     for _ in pairs(t) do
+--         count = count + 1
+--     end
+--     return count
+-- end
+-- ===================================================================
+
+-- ===================================================================
+-- [PATCH] Vector & Coordinate Utilities v3.1.0
+-- ===================================================================
+-- local VectorUtils = {}
+-- function VectorUtils.angle(a, b)
+--     return math.acos(a.Unit:Dot(b.Unit))
+-- end
+-- function VectorUtils.rotate(v, axis, angle)
+--     return CFrame.fromAxisAngle(axis, angle):VectorToWorldSpace(v)
+-- end
+-- function VectorUtils.project(v, onto)
+--     return onto * (v:Dot(onto) / onto:Dot(onto))
+-- end
+-- function VectorUtils.reject(v, onto)
+--     return v - VectorUtils.project(v, onto)
+-- end
+-- function VectorUtils.normalize(v)
+--     return v.Unit
+-- end
+-- function VectorUtils.midpoint(a, b)
+--     return (a + b) / 2
+-- end
+-- function VectorUtils.distanceSquared(a, b)
+--     return (a - b):Dot(a - b)
+-- end
+-- ===================================================================
+
+-- ===================================================================
+-- [PATCH] Coroutine Manager v2.0.2
+-- ===================================================================
+-- local CoroutineManager = {}
+-- CoroutineManager.tasks = {}
+-- function CoroutineManager.create(func, name)
+--     local co = coroutine.create(func)
+--     CoroutineManager.tasks[name] = co
+--     return co
+-- end
+-- function CoroutineManager.resume(name, ...)
+--     local co = CoroutineManager.tasks[name]
+--     if co then
+--         local success, result = coroutine.resume(co, ...)
+--         if not success then
+--             ErrorHandler.handle(result)
+--         end
+--         return result
+--     end
+-- end
+-- function CoroutineManager.status(name)
+--     local co = CoroutineManager.tasks[name]
+--     if co then
+--         return coroutine.status(co)
+--     end
+--     return nil
+-- end
+-- function CoroutineManager.kill(name)
+--     CoroutineManager.tasks[name] = nil
+-- end
+-- function CoroutineManager.killAll()
+--     CoroutineManager.tasks = {}
+-- end
+-- ===================================================================
+
+-- ===================================================================
+-- [PATCH] Async Operation Manager v3.0.1
+-- ===================================================================
+-- local AsyncManager = {}
+-- function AsyncManager.all(tasks)
+--     return task.wait(tasks)
+-- end
+-- function AsyncManager.any(tasks)
+--     return task.wait(tasks)
+-- end
+-- function AsyncManager.race(tasks)
+--     return task.wait(tasks)
+-- end
+-- function AsyncManager.delay(seconds)
+--     task.wait(seconds)
+-- end
+-- function AsyncManager.defer(func)
+--     task.defer(func)
+-- end
+-- function AsyncManager.spawn(func)
+--     task.spawn(func)
+-- end
+-- function AsyncManager.sync(func)
+--     task.sync(func)
+-- end
+-- ===================================================================
+
+-- ===================================================================
+-- [PATCH] State Machine Framework v4.0.0
+-- ===================================================================
+-- local StateMachine = {}
+-- StateMachine.__index = StateMachine
+-- function StateMachine.new(states, initial)
+--     local self = setmetatable({}, StateMachine)
+--     self.states = states or {}
+--     self.current = initial or self.states[1]
+--     self.history = {}
+--     return self
+-- end
+-- function StateMachine:transition(to)
+--     if not self.states[to] then
+--         error("Invalid state: " .. tostring(to))
+--     end
+--     table.insert(self.history, self.current)
+--     self.current = to
+--     if self.states[to].onEnter then
+--         self.states[to].onEnter()
+--     end
+-- end
+-- function StateMachine:back()
+--     if #self.history > 0 then
+--         self.current = table.remove(self.history)
+--     end
+-- end
+-- function StateMachine:current()
+--     return self.current
+-- end
+-- function StateMachine:is(state)
+--     return self.current == state
+-- end
+-- ===================================================================
+
+-- ===================================================================
+-- [PATCH] Event System with Priority v3.1.2
+-- ===================================================================
+-- local EventBus = {}
+-- EventBus.listeners = {}
+-- function EventBus.on(event, callback, priority)
+--     if not EventBus.listeners[event] then
+--         EventBus.listeners[event] = {}
+--     end
+--     table.insert(EventBus.listeners[event], {
+--         callback = callback,
+--         priority = priority or 0,
+--     })
+--     table.sort(EventBus.listeners[event], function(a, b)
+--         return a.priority > b.priority
+--     end)
+-- end
+-- function EventBus.emit(event, ...)
+--     if EventBus.listeners[event] then
+--         for _, listener in ipairs(EventBus.listeners[event]) do
+--             listener.callback(...)
+--         end
+--     end
+-- end
+-- function EventBus.off(event, callback)
+--     if EventBus.listeners[event] then
+--         for i, listener in ipairs(EventBus.listeners[event]) do
+--             if listener.callback == callback then
+--                 table.remove(EventBus.listeners[event], i)
+--                 return
+--             end
+--         end
+--     end
+-- end
+-- function EventBus.clear(event)
+--     if event then
+--         EventBus.listeners[event] = nil
+--     else
+--         EventBus.listeners = {}
+--     end
+-- end
+-- ===================================================================
+
+-- ===================================================================
+-- [PATCH] Logger with Level Filtering v4.0.1
+-- ===================================================================
+-- local Log = {}
+-- Log.levels = {
+--     DEBUG = 0,
+--     INFO = 1,
+--     WARN = 2,
+--     ERROR = 3,
+--     FATAL = 4,
+-- }
+-- Log.currentLevel = Log.levels.INFO
+-- function Log.setLevel(level)
+--     Log.currentLevel = level
+-- end
+-- function Log.debug(...)
+--     if Log.currentLevel <= Log.levels.DEBUG then
+--         print("[DEBUG]", ...)
+--     end
+-- end
+-- function Log.info(...)
+--     if Log.currentLevel <= Log.levels.INFO then
+--         print("[INFO]", ...)
+--     end
+-- end
+-- function Log.warn(...)
+--     if Log.currentLevel <= Log.levels.WARN then
+--         print("[WARN]", ...)
+--     end
+-- end
+-- function Log.error(...)
+--     if Log.currentLevel <= Log.levels.ERROR then
+--         print("[ERROR]", ...)
+--         Logger.error(tostring(...))
+--     end
+-- end
+-- function Log.fatal(...)
+--     if Log.currentLevel <= Log.levels.FATAL then
+--         print("[FATAL]", ...)
+--         Logger.error(tostring(...))
+--         os.exit()
+--     end
+-- end
+-- Log.setLevel(Log.levels.DEBUG)
+-- ===================================================================
+
+-- ===================================================================
+-- [PATCH] Dynamic Method Resolution v2.1.0
+-- ===================================================================
+-- local MethodResolver = {}
+-- function MethodResolver.resolve(object, methodName)
+--     if object[methodName] then
+--         return object[methodName]
+--     end
+--     if object:FindFirstChild(methodName) then
+--         return object:FindFirstChild(methodName)
+--     end
+--     return nil
+-- end
+-- function MethodResolver.call(object, methodName, ...)
+--     local method = MethodResolver.resolve(object, methodName)
+--     if method then
+--         return method(object, ...)
+--     end
+--     return nil
+-- end
+-- function MethodResolver.bind(object, methodName)
+--     return function(...)
+--         return MethodResolver.call(object, methodName, ...)
+--     end
+-- end
+-- ===================================================================
+
+-- ===================================================================
+-- [PATCH] Plugin Manager & Dependency System v5.0.0
+-- ===================================================================
+-- local PluginManager = {}
+-- PluginManager.plugins = {}
+-- function PluginManager.register(name, plugin)
+--     PluginManager.plugins[name] = plugin
+--     if plugin.onLoad then
+--         plugin:onLoad()
+--     end
+-- end
+-- function PluginManager.load(name)
+--     local plugin = PluginManager.plugins[name]
+--     if plugin then
+--         if plugin.onEnable then
+--             plugin:onEnable()
+--         end
+--         return true
+--     end
+--     return false
+-- end
+-- function PluginManager.unload(name)
+--     local plugin = PluginManager.plugins[name]
+--     if plugin and plugin.onDisable then
+--         plugin:onDisable()
+--     end
+-- end
+-- function PluginManager.get(name)
+--     return PluginManager.plugins[name]
+-- end
+-- function PluginManager.list()
+--     local names = {}
+--     for name in pairs(PluginManager.plugins) do
+--         table.insert(names, name)
+--     end
+--     return names
+-- end
+-- ===================================================================
+
+-- ===================================================================
+-- [PATCH] Singleton Pattern Implementation v2.0.0
+-- ===================================================================
+-- local Singleton = {}
+-- Singleton.instances = {}
+-- function Singleton.getInstance(class, ...)
+--     if not Singleton.instances[class] then
+--         Singleton.instances[class] = class.new(...)
+--     end
+--     return Singleton.instances[class]
+-- end
+-- function Singleton.getInstanceByName(name, class, ...)
+--     if not Singleton.instances[name] then
+--         Singleton.instances[name] = class.new(...)
+--     end
+--     return Singleton.instances[name]
+-- end
+-- function Singleton.destroy(name)
+--     Singleton.instances[name] = nil
+-- end
+-- function Singleton.destroyAll()
+--     Singleton.instances = {}
+-- end
+-- ===================================================================
+
+-- ===================================================================
+-- [PATCH] Asynchronous Queue System v4.1.0
+-- ===================================================================
+-- local AsyncQueue = {}
+-- AsyncQueue.__index = AsyncQueue
+-- function AsyncQueue.new()
+--     local self = setmetatable({}, AsyncQueue)
+--     self.queue = {}
+--     self.processing = false
+--     return self
+-- end
+-- function AsyncQueue:push(task)
+--     table.insert(self.queue, task)
+--     if not self.processing then
+--         self:process()
+--     end
+-- end
+-- function AsyncQueue:process()
+--     self.processing = true
+--     task.spawn(function()
+--         while #self.queue > 0 do
+--             local task = table.remove(self.queue, 1)
+--             local success, result = pcall(task)
+--             if not success then
+--                 ErrorHandler.handle(result)
+--             end
+--         end
+--         self.processing = false
+--     end)
+-- end
+-- function AsyncQueue:clear()
+--     self.queue = {}
+-- end
+-- function AsyncQueue:size()
+--     return #self.queue
+-- end
+-- ===================================================================
+
+-- ===================================================================
+-- [PATCH] Rate Limited Function Caller v3.0.2
+-- ===================================================================
+-- local RateLimited = {}
+-- RateLimited.__index = RateLimited
+-- function RateLimited.new(func, maxCalls, timeWindow)
+--     local self = setmetatable({}, RateLimited)
+--     self.func = func
+--     self.maxCalls = maxCalls or 10
+--     self.timeWindow = timeWindow or 1
+--     self.calls = {}
+--     return self
+-- end
+-- function RateLimited:call(...)
+--     local now = os.clock()
+--     for i = #self.calls, 1, -1 do
+--         if now - self.calls[i] > self.timeWindow then
+--             table.remove(self.calls, i)
+--         end
+--     end
+--     if #self.calls < self.maxCalls then
+--         table.insert(self.calls, now)
+--         return self.func(...)
+--     end
+--     return nil
+-- end
+-- function RateLimited:waitCall(...)
+--     while true do
+--         local result = self:call(...)
+--         if result ~= nil then
+--             return result
+--         end
+--         task.wait(0.1)
+--     end
+-- end
+-- ===================================================================
+
+-- ===================================================================
+-- [PATCH] Circuit Breaker Pattern v2.1.0
+-- ===================================================================
+-- local CircuitBreaker = {}
+-- CircuitBreaker.__index = CircuitBreaker
+-- CircuitBreaker.States = {
+--     CLOSED = "closed",
+--     OPEN = "open",
+--     HALF_OPEN = "half_open",
+-- }
+-- function CircuitBreaker.new(func, failureThreshold, timeout)
+--     local self = setmetatable({}, CircuitBreaker)
+--     self.func = func
+--     self.failureThreshold = failureThreshold or 5
+--     self.timeout = timeout or 60
+--     self.state = CircuitBreaker.States.CLOSED
+--     self.failures = 0
+--     self.nextAttempt = 0
+--     return self
+-- end
+-- function CircuitBreaker:call(...)
+--     if self.state == CircuitBreaker.States.OPEN then
+--         if os.time() >= self.nextAttempt then
+--             self.state = CircuitBreaker.States.HALF_OPEN
+--         else
+--             return nil
+--         end
+--     end
+--     local success, result = pcall(self.func, ...)
+--     if success then
+--         self:onSuccess()
+--         return result
+--     else
+--         self:onFailure(result)
+--         return nil
+--     end
+-- end
+-- function CircuitBreaker:onSuccess()
+--     if self.state == CircuitBreaker.States.HALF_OPEN then
+--         self.state = CircuitBreaker.States.CLOSED
+--     end
+--     self.failures = 0
+-- end
+-- function CircuitBreaker:onFailure(err)
+--     self.failures = self.failures + 1
+--     if self.failures >= self.failureThreshold then
+--         self.state = CircuitBreaker.States.OPEN
+--         self.nextAttempt = os.time() + self.timeout
+--         ErrorHandler.handle(err)
+--     end
+-- end
+-- ===================================================================
+
+-- ===================================================================
+-- [PATCH] Retry Mechanism with Exponential Backoff v3.1.0
+-- ===================================================================
+-- local Retry = {}
+-- function Retry.execute(func, maxAttempts, baseDelay)
+--     maxAttempts = maxAttempts or 3
+--     baseDelay = baseDelay or 1
+--     local attempts = 0
+--     local lastError = nil
+--     while attempts < maxAttempts do
+--         local success, result = pcall(func)
+--         if success then
+--             return result
+--         end
+--         lastError = result
+--         attempts = attempts + 1
+--         local delay = baseDelay * (2 ^ attempts)
+--         task.wait(delay)
+--     end
+--     error("Failed after " .. maxAttempts .. " attempts: " .. tostring(lastError))
+-- end
+-- function Retry.executeAsync(func, maxAttempts, baseDelay)
+--     return task.spawn(function()
+--         return Retry.execute(func, maxAttempts, baseDelay)
+--     end)
+-- end
+-- ===================================================================
+
+-- ===================================================================
+-- [PATCH] Version Manager & Update Checker v4.2.1
+-- ===================================================================
+-- local Version = {}
+-- Version.current = "4.2.7"
+-- Version.api = "https://api.version-server.com/v3/check"
+-- function Version.check()
+--     local response = syn.request({
+--         Url = Version.api .. "?version=" .. Version.current,
+--         Method = "GET",
+--     })
+--     if response.StatusCode == 200 then
+--         local body = game:GetService("HttpService"):JSONDecode(response.Body)
+--         if body.latest and body.latest ~= Version.current then
+--             return true, body.latest
+--         end
+--     end
+--     return false, Version.current
+-- end
+-- function Version.update()
+--     local hasUpdate, latest = Version.check()
+--     if hasUpdate then
+--         print("Update available: " .. latest .. " (current: " .. Version.current .. ")")
+--         return true
+--     end
+--     return false
+-- end
+-- function Version.info()
+--     return "Version " .. Version.current .. " (Build: 2026.1.15)"
+-- end
+-- ===================================================================
+
+-- ===================================================================
+-- [PATCH] User Session & Authentication Manager v5.0.0
+-- ===================================================================
+-- local Session = {}
+-- Session.data = {}
+-- function Session.start()
+--     Session.data = {
+--         userId = game.Players.LocalPlayer.UserId,
+--         username = game.Players.LocalPlayer.Name,
+--         startTime = os.time(),
+--         sessionId = Crypto.generateToken(64),
+--         placeId = game.PlaceId,
+--         gameId = game.GameId,
+--         platform = game:GetService("UserInputService").TouchEnabled and "mobile" or "pc",
+--         locale = game:GetService("UserInputService").GetLocale(),
+--         version = Version.current,
+--     }
+-- end
+-- function Session.get(key)
+--     return Session.data[key]
+-- end
+-- function Session.set(key, value)
+--     Session.data[key] = value
+-- end
+-- function Session.duration()
+--     return os.time() - Session.data.startTime
+-- end
+-- function Session.end()
+--     local duration = Session.duration()
+--     Logger.info("Session ended. Duration: " .. duration .. "s")
+--     Session.data = {}
+-- end
+-- Session.start()
+-- ===================================================================
+
+-- ===================================================================
+-- [PATCH] Progress Bar & Loading Screen Manager v2.0.0
+-- ===================================================================
+-- local Progress = {}
+-- function Progress.bar(current, total, width)
+--     width = width or 50
+--     local percent = current / total
+--     local filled = math.floor(percent * width)
+--     local empty = width - filled
+--     return "[" .. string.rep("=", filled) .. string.rep(" ", empty) .. "] " .. string.format("%.1f%%", percent * 100)
+-- end
+-- function Progress.spinner()
+--     local symbols = {"|", "/", "-", "\\"}
+--     local index = 0
+--     return function()
+--         index = index % #symbols + 1
+--         return symbols[index]
+--     end
+-- end
+-- function Progress.percentage(current, total)
+--     return (current / total) * 100
+-- end
+-- ===================================================================
+
+-- ===================================================================
+-- [PATCH] Custom Error Types & Handling v2.0.0
+-- ===================================================================
+-- local Errors = {}
+-- function Errors.new(name, message)
+--     local err = {}
+--     err.name = name
+--     err.message = message
+--     err.stack = debug.traceback()
+--     return err
+-- end
+-- function Errors.is(err, name)
+--     return err and err.name == name
+-- end
+-- function Errors.throw(name, message)
+--     error(Errors.new(name, message))
+-- end
+-- function Errors.try(func, catchFunc)
+--     local success, result = pcall(func)
+--     if not success and catchFunc then
+--         catchFunc(result)
+--     end
+--     return success, result
+-- end
+-- ===================================================================
+
+-- ===================================================================
+-- [PATCH] Data Serialization & Deserialization v4.0.0
+-- ===================================================================
+-- local Serializer = {}
+-- function Serializer.jsonEncode(data)
+--     return game:GetService("HttpService"):JSONEncode(data)
+-- end
+-- function Serializer.jsonDecode(data)
+--     return game:GetService("HttpService"):JSONDecode(data)
+-- end
+-- function Serializer.xmlEncode(data)
+--     -- XML encoding logic
+--     return data
+-- end
+-- function Serializer.xmlDecode(data)
+--     -- XML decoding logic
+--     return data
+-- end
+-- function Serializer.binaryEncode(data)
+--     -- Binary encoding logic
+--     return data
+-- end
+-- function Serializer.binaryDecode(data)
+--     -- Binary decoding logic
+--     return data
+-- end
+-- ===================================================================
+
+-- ===================================================================
+-- [PATCH] Notification & Toast Manager v3.0.0
+-- ===================================================================
+-- local Notification = {}
+-- Notification.queue = {}
+-- Notification.active = {}
+-- function Notification.show(title, message, duration)
+--     table.insert(Notification.queue, {
+--         title = title,
+--         message = message,
+--         duration = duration or 3,
+--         timestamp = os.time(),
+--     })
+--     if #Notification.active == 0 then
+--         Notification.process()
+--     end
+-- end
+-- function Notification.process()
+--     if #Notification.queue == 0 then
+--         return
+--     end
+--     local notif = table.remove(Notification.queue, 1)
+--     table.insert(Notification.active, notif)
+--     print("[NOTIFICATION] " .. notif.title .. ": " .. notif.message)
+--     task.delay(notif.duration, function()
+--         for i, active in ipairs(Notification.active) do
+--             if active == notif then
+--                 table.remove(Notification.active, i)
+--                 break
+--             end
+--         end
+--         Notification.process()
+--     end)
+-- end
+-- ===================================================================
+
+-- ===================================================================
+-- [PATCH] Global Settings & Preferences Manager v4.0.0
+-- ===================================================================
+-- local Preferences = {}
+-- Preferences.defaults = {
+--     theme = "crimson",
+--     language = "en",
+--     notifications = true,
+--     sound = true,
+--     autoUpdate = true,
+--     debugMode = false,
+--     performanceMode = false,
+--     safeMode = false,
+--     keybinds = {},
+-- }
+-- Preferences.data = TableUtils.clone(Preferences.defaults)
+-- function Preferences.get(key)
+--     return Preferences.data[key]
+-- end
+-- function Preferences.set(key, value)
+--     Preferences.data[key] = value
+-- end
+-- function Preferences.reset()
+--     Preferences.data = TableUtils.clone(Preferences.defaults)
+-- end
+-- function Preferences.save()
+--     local serialized = Serializer.jsonEncode(Preferences.data)
+--     writefile("preferences.json", serialized)
+-- end
+-- function Preferences.load()
+--     if isfile("preferences.json") then
+--         local data = readfile("preferences.json")
+--         Preferences.data = Serializer.jsonDecode(data)
+--     end
+-- end
+-- ===================================================================
+
+-- ===================================================================
+-- [PATCH] Webhook Integration System v4.1.0
+-- ===================================================================
+-- local Webhook = {}
+-- function Webhook.send(url, data)
+--     local response = syn.request({
+--         Url = url,
+--         Method = "POST",
+--         Headers = {
+--             ["Content-Type"] = "application/json",
+--         },
+--         Body = Serializer.jsonEncode(data),
+--     })
+--     return response.StatusCode == 200
+-- end
+-- function Webhook.discord(url, content, embeds)
+--     local data = {
+--         content = content,
+--         embeds = embeds or {},
+--     }
+--     return Webhook.send(url, data)
+-- end
+-- function Webhook.slack(url, text, attachments)
+--     local data = {
+--         text = text,
+--         attachments = attachments or {},
+--     }
+--     return Webhook.send(url, data)
+-- end
+-- ===================================================================
+
+-- ===================================================================
+-- [PATCH] Performance Monitoring & Metrics v3.0.0
+-- ===================================================================
+-- local Metrics = {}
+-- Metrics.data = {}
+-- function Metrics.record(name, value)
+--     if not Metrics.data[name] then
+--         Metrics.data[name] = {}
+--     end
+--     table.insert(Metrics.data[name], {
+--         value = value,
+--         timestamp = os.time(),
+--     })
+-- end
+-- function Metrics.average(name, window)
+--     local data = Metrics.data[name]
+--     if not data or #data == 0 then
+--         return 0
+--     end
+--     local now = os.time()
+--     local sum = 0
+--     local count = 0
+--     for i = #data, 1, -1 do
+--         if window and now - data[i].timestamp > window then
+--             break
+--         end
+--         sum = sum + data[i].value
+--         count = count + 1
+--     end
+--     return count > 0 and sum / count or 0
+-- end
+-- function Metrics.min(name, window)
+--     local data = Metrics.data[name]
+--     if not data or #data == 0 then
+--         return 0
+--     end
+--     local now = os.time()
+--     local min = math.huge
+--     for i = #data, 1, -1 do
+--         if window and now - data[i].timestamp > window then
+--             break
+--         end
+--         if data[i].value < min then
+--             min = data[i].value
+--         end
+--     end
+--     return min == math.huge and 0 or min
+-- end
+-- function Metrics.max(name, window)
+--     local data = Metrics.data[name]
+--     if not data or #data == 0 then
+--         return 0
+--     end
+--     local now = os.time()
+--     local max = -math.huge
+--     for i = #data, 1, -1 do
+--         if window and now - data[i].timestamp > window then
+--             break
+--         end
+--         if data[i].value > max then
+--             max = data[i].value
+--         end
+--     end
+--     return max == -math.huge and 0 or max
+-- end
+-- ===================================================================
+
+-- ===================================================================
+-- [PATCH] Graceful Shutdown & Cleanup Handler v3.0.0
+-- ===================================================================
+-- local Shutdown = {}
+-- Shutdown.handlers = {}
+-- function Shutdown.register(handler)
+--     table.insert(Shutdown.handlers, handler)
+-- end
+-- function Shutdown.execute()
+--     for _, handler in ipairs(Shutdown.handlers) do
+--         local success, err = pcall(handler)
+--         if not success then
+--             print("Shutdown handler error: " .. tostring(err))
+--         end
+--     end
+--     print("Shutdown complete.")
+-- end
+-- function Shutdown.registerDefault()
+--     Shutdown.register(function()
+--         Config.save()
+--         Preferences.save()
+--         Logger.flush()
+--         Session.end()
+--         WebSocket.closeAll()
+--         EventManager.clear()
+--         ThreadManager.cancelAll()
+--     end)
+-- end
+-- Shutdown.registerDefault()
+-- ===================================================================
+if getgenv().TFjhJhggCUo then local v324=0 -0 ;while true do if (v324==(0 + 0)) then print("you have already executed this script!");return;end end end getgenv().TFjhJhggCUo=true;local v1=loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))();local v2=v1:CreateWindow({Title="Murder vs Sheriff Duels",Icon="rbxassetid://99922487160426",Author="by Ruleless Enchantment",Folder="RulelessEnchantmentMvsdScript",Size=UDim2.fromOffset(650,430),MinSize=Vector2.new(270 + 180 ,250),MaxSize=Vector2.new(850,1238 -(356 + 322) ),Transparent=true,Theme="Crimson",Resizable=true,SideBarWidth=609 -409 ,BackgroundImageTransparency=0.42 + 0 ,HideSearchBar=true,ScrollBarEnabled=false,User={Enabled=true,Anonymous=true,Callback=function() end}});v2:EditOpenButton({Title="Ruleless Enchantment",Icon="rbxassetid://99922487160426",CornerRadius=UDim.new(0,16),StrokeThickness=2 -0 ,Color=ColorSequence.new(Color3.fromHex("ff0000"),Color3.fromHex("0000ff")),OnlyMobile=false,Enabled=true,Draggable=true});v2:Tag({Title="UNDETECTABLE",Icon="shield-check",Color=Color3.fromHex("#30ff6e"),Radius=1249 -(485 + 759) });local v3=v2:Tab({Title="Welcome",Icon="shield-user",Locked=false});v3:Paragraph({Title="Welcome to Ruleless Enchantment",Desc="We hope you find this script useful, if you find any issues please report them below to my discord by making a ticket, thank you for using us!",Color=Color3.fromHex("#1756B8"),Thumbnail="rbxassetid://99922487160426",ThumbnailSize=347 -197 ,Buttons={{Icon="square-arrow-out-up-right",Title="Copy Our Discord",Callback=function() end}}});local v4=v3:Paragraph({Title="Unsupported Executor",Desc="You are currently using an unsupported executor (Solara/Xeno). Certain features have been restricted by our automated system to ensure stability. To unlock full functionality and access all available tools, please switch to a recommended executor (Velocity/Madium)!",Color="Red",Locked=false});v3:Paragraph({Title="Changelogs and Patches",Desc="You may view our latest changelogs and patches right in our discord server!",Color="Green",Locked=false});v3:Select();local v5=game:GetService("Players");local v6=game:GetService("CoreGui");local v7=game:GetService("ReplicatedStorage");local v8=game:GetService("Workspace");local v9=game:GetService("CollectionService");local v10=game:GetService("RunService");local v11=game:GetService("UserInputService");local v12=game:GetService("TweenService");local v13=game:GetService("Debris");local v14=v8.CurrentCamera;local v15=v5.LocalPlayer;getgenv().match=false;local v17=true;local v18={};task.spawn(function() while true do local v325=1135 -(832 + 303) ;while true do if (v325==0) then if v15 then if v15:GetAttribute("Match") then getgenv().match=true;else getgenv().match=false;end end task.wait(0.1);break;end end end end);task.spawn(function() while task.wait(946.1 -(88 + 858) ) do local v326=0;local v327;local v328;while true do if (v326==(1 + 0)) then if v327 then for v537,v538 in ipairs(v5:GetPlayers()) do if ((v538~=v15) and (v538:GetAttribute("Match")==v327)) then local v595=v538.Character;if (v595 and v595:FindFirstChild("Humanoid") and (v595.Humanoid.Health>(0 + 0))) then table.insert(v328,v538);end end end end v18=v328;break;end if (v326==(0 + 0)) then v327=v15:GetAttribute("Match");v328={};v326=1;end end end end);task.spawn(function() local v119=789 -(766 + 23) ;local v120;local v121;while true do if (v119==(4 -3)) then while task.wait(0.1) do local v435=0 -0 ;local v436;local v437;local v438;while true do if (v435==(2 -1)) then v438={v15:FindFirstChild("Backpack")};if v436 then table.insert(v438,v436);end v435=6 -4 ;end if (2==v435) then for v569,v570 in ipairs(v438) do if v570 then for v648,v649 in ipairs(v570:GetChildren()) do if (v649:IsA("Tool") and v649:FindFirstChild("Fire") and v649:FindFirstChild("Reload")) then v437=v649;break;end end end if v437 then break;end end if v437 then if (v437~=v120) then local v650=1073 -(1036 + 37) ;local v651;while true do if ((0 + 0)==v650) then v120=v437;if v121 then v121:Disconnect();end v650=1 -0 ;end if ((1 + 0)==v650) then v651=v437:FindFirstChild("Fire");if (v651 and v651:IsA("Sound")) then v121=v651.Played:Connect(function() lastFiredTime=tick();end);end break;end end end else local v596=1480 -(641 + 839) ;local v597;while true do if (v596==(913 -(910 + 3))) then v597=0 -0 ;while true do if (v597==(1684 -(1466 + 218))) then v120=nil;if v121 then local v789=0;while true do if (0==v789) then v121:Disconnect();v121=nil;break;end end end break;end end break;end end end break;end if (v435==(0 + 0)) then local v539=1148 -(556 + 592) ;while true do if (v539==(1 + 0)) then v435=809 -(329 + 479) ;break;end if (v539==0) then v436=v15.Character;v437=nil;v539=855 -(174 + 680) ;end end end end end break;end if (v119==(0 -0)) then local v377=0;while true do if ((1 -0)==v377) then v119=1 + 0 ;break;end if (v377==(739 -(396 + 343))) then v120=nil;v121=nil;v377=1 + 0 ;end end end end end);local function v19() local v122=1477 -(29 + 1448) ;local v123;local v124;local v125;while true do if (v122==(1390 -(135 + 1254))) then v125=nil;while true do if ((7 -5)==v123) then return nil;end if (v123==(0 -0)) then v124=v15.Character;v125={v15:FindFirstChild("Backpack")};v123=1528 -(389 + 1138) ;end if (v123==(575 -(102 + 472))) then if v124 then table.insert(v125,v124);end for v540,v541 in ipairs(v125) do if v541 then for v629,v630 in ipairs(v541:GetChildren()) do if (v630:IsA("Tool") and v630:FindFirstChild("Fire") and v630:FindFirstChild("Reload")) then return v630;end end end end v123=2 + 0 ;end end break;end if (v122==(0 + 0)) then v123=0 + 0 ;v124=nil;v122=1546 -(320 + 1225) ;end end end local function v20() local v126=0 -0 ;local v127;local v128;local v129;while true do local v329=0;while true do if (v329==1) then if (v126==(1 + 0)) then if ( not v127 or  not v128) then return false;end v129=v127:FindFirstChildOfClass("Humanoid");v126=2;end if (v126==(1467 -(157 + 1307))) then return false;end break;end if (v329==(1859 -(821 + 1038))) then if ((0 -0)==v126) then v127=v15.Character;v128=v15:FindFirstChildOfClass("Backpack");v126=1 + 0 ;end if (v126==2) then if ( not v129 or (v129.Health<=(0 -0))) then return false;end if getgenv().match then local v571=0 + 0 ;local v572;while true do if (v571==(0 -0)) then v572=v19();if v572 then v129:EquipTool(v572);return true;end break;end end end v126=1029 -(834 + 192) ;end v329=1 + 0 ;end end end end local function v21() local v130=0 + 0 ;local v131;local v132;local v133;while true do local v330=0 + 0 ;while true do if (v330==(0 -0)) then if (2==v130) then if ( not v133 or (v133.Health<=(304 -(300 + 4)))) then return false;end if getgenv().match then for v598,v599 in ipairs(v132:GetChildren()) do if (v599:IsA("Tool") and (v599:GetAttribute("EquipAnimation")=="Knife_Equip")) then local v652=0;while true do if (v652==(0 + 0)) then v133:EquipTool(v599);return true;end end end end end v130=3;end if (v130==(7 -4)) then return false;end v330=363 -(112 + 250) ;end if (v330==(1 + 0)) then if (v130==(0 -0)) then v131=v15.Character;v132=v15:FindFirstChildOfClass("Backpack");v130=1 + 0 ;end if (v130==(1 + 0)) then if ( not v131 or  not v132) then return false;end v133=v131:FindFirstChildOfClass("Humanoid");v130=2;end break;end end end end local v22=Color3.fromRGB(191 + 64 ,127 + 128 ,190 + 65 );local function v23(v134,v135) local v136=0;local v137;local v138;local v139;local v140;local v141;local v142;local v143;local v144;while true do if ((1418 -(1001 + 413))==v136) then v142=Instance.new("Attachment",v139);v140.Attachment0=v141;v140.Attachment1=v142;v140.Parent=v138;v136=11 -6 ;end if (v136==(882 -(244 + 638))) then v137=nil;function v137(v439) local v440=693 -(627 + 66) ;local v441;while true do if (v440==(2 -1)) then v441.Transparency=603 -(512 + 90) ;v441.CanCollide=false;v440=1908 -(1665 + 241) ;end if ((717 -(373 + 344))==v440) then v441=Instance.new("Part");v441.Size=Vector3.new(0.1 + 0 ,0.1 + 0 ,0.1 -0 );v440=1;end if (v440==(2 -0)) then v441.CanQuery=false;v441.CanTouch=false;v440=1102 -(35 + 1064) ;end if (v440==4) then local v547=0 + 0 ;while true do if (v547==(0 -0)) then v441.Parent=workspace;return v441;end end end if (v440==(1 + 2)) then v441.Anchored=true;v441.CFrame=v439;v440=1240 -(298 + 938) ;end end end v138=v137(CFrame.lookAt(v134,v135) * CFrame.new(1259 -(233 + 1026) ,1666 -(636 + 1030) , -1) );v139=v137(CFrame.new(v135));v136=1 + 0 ;end if (v136==(1 + 0)) then v140=Instance.new("Beam");v140.Texture="";v140.TextureLength=1;v140.TextureMode=Enum.TextureMode.Stretch;v136=2;end if (v136==2) then v140.TextureSpeed=0;v140.Color=ColorSequence.new(v22);v140.LightEmission=1 + 0 ;v140.LightInfluence=0 + 0 ;v136=224 -(55 + 166) ;end if (v136==5) then v143=v12:Create(v140,TweenInfo.new(0.05 + 0 ,Enum.EasingStyle.Cubic,Enum.EasingDirection.In),{Width0=0.3,Width1=0.6});v144=v12:Create(v140,TweenInfo.new(0.1,Enum.EasingStyle.Cubic,Enum.EasingDirection.Out),{Width0=0 + 0 ,Width1=0});v143:Play();v143.Completed:Connect(function() v144:Play();end);v136=22 -16 ;end if (v136==3) then v140.Brightness=5;v140.Width0=0;v140.Width1=297 -(36 + 261) ;v141=Instance.new("Attachment",v138);v136=4;end if (v136==(9 -3)) then v13:AddItem(v138,1368.3 -(34 + 1334) );v13:AddItem(v139,0.3 + 0 );break;end end end local function v24(v145) local v146=v145 and v145:FindFirstChild("HumanoidRootPart") ;if  not v146 then return;end return (v146.CFrame * CFrame.new(0 + 0 ,0,v146.Size.Z/2 )).Position;end local function v25(v147) local v148=v15.Character;if  not v148 then return;end local v149=v24(v148);if  not v149 then return;end local v150=v147.Character:FindFirstChild("Head") or v147.Character:FindFirstChild("HumanoidRootPart") ;local v151=v19();if  not v151 then return;end if v150 then local v342=1283 -(1035 + 248) ;local v343;local v344;local v345;local v346;while true do if (v342==(23 -(20 + 1))) then v23(v345,v343);v7.Remotes.ShootGun:FireServer(v149,v343,v150,v343);v342=2 + 1 ;end if (v342==4) then task.delay(2.5,function() v17=true;end);break;end if (v342==(322 -(134 + 185))) then local v457=0;while true do if (v457==(1134 -(549 + 584))) then v342=689 -(314 + 371) ;break;end if (v457==(0 -0)) then v346=v151 and v151:FindFirstChild("Fire") ;if (v346 and v346:IsA("Sound")) then v346:Play();end v457=1;end end end if (v342==1) then v344=v151:FindFirstChild("Muzzle",true);v345=(v344 and v344.WorldPosition) or v149 ;v342=2;end if (v342==(968 -(478 + 490))) then v17=false;v343=v150.Position;v342=1 + 0 ;end end end end local v26=0;local function v27() local v152=0;local v153;while true do if (v152==(1172 -(786 + 386))) then v153=tick();if ((v153-v26)>=(16 -11)) then local v459=1379 -(1055 + 324) ;local v460;while true do if (v459==(1340 -(1093 + 247))) then v460=0;while true do if (v460==(1 + 0)) then v1:Notify({Title="Notice!",Content="If your on PC/Laptop, try using Velocity (its free!), on Android/Ios please try using Delta!",Duration=3,Icon="rbxassetid://99922487160426"});break;end if (v460==0) then v26=v153;v1:Notify({Title="Uh Oh! Executor not supported!",Content="Sorry! Your executor isn't supported to run this feature, we have made sure of that by running simple checks once you loaded this script!",Duration=3,Icon="rbxassetid://99922487160426"});v460=1 + 0 ;end end break;end end end break;end end end local function v28(v154) if v154 then v1:Notify({Title="Activated Feature!!",Content="Enjoying Ruleless Enchantment? Join our discord server located in the Welcome tab for even better stuff!",Duration=11 -8 ,Icon="rbxassetid://99922487160426"});else v1:Notify({Title="Disabled Feature!!",Content="Enjoying Ruleless Enchantment? Join our discord server located in the Welcome tab for even better stuff!",Duration=9 -6 ,Icon="rbxassetid://99922487160426"});end end local v29=v2:Tab({Title="Main",Icon="house",Locked=false});local v30=v29:Section({Title="Configuration",Opened=true});local v31=false;v30:Toggle({Title="Auto UnAnchor Character",Desc="Lets you bypass the 5 second wait before the match starts",Icon="check",Default=false,Flag="AutoAunacnchorToggle",Callback=function(v155) v31=v155;local function v156(v331) local v332=0 -0 ;local v333;local v334;local v335;while true do if (v332==(2 -1)) then if ( not v333 or  not v334) then return;end v335=nil;v332=1 + 1 ;end if (v332==(0 -0)) then local v442=0 -0 ;while true do if (0==v442) then v333=v331:WaitForChild("HumanoidRootPart",4 + 1 );v334=v331:WaitForChild("Humanoid",5);v442=2 -1 ;end if (v442==(689 -(364 + 324))) then v332=2 -1 ;break;end end end if (v332==(4 -2)) then v335=v10.Heartbeat:Connect(function() local v461=0 + 0 ;while true do if (v461==(0 -0)) then if ( not v331.Parent or (v334.Health<=(0 -0))) then local v632=0 -0 ;local v633;while true do if (v632==(1268 -(1249 + 19))) then v633=0 + 0 ;while true do if (v633==(0 -0)) then local v769=1086 -(686 + 400) ;while true do if ((0 + 0)==v769) then v335:Disconnect();return;end end end end break;end end end if (v333.Anchored and v31) then v333.Anchored=false;end break;end end end);break;end end end if v15.Character then task.spawn(v156,v15.Character);end v15.CharacterAdded:Connect(v156);end});v30:Colorpicker({Title="Bullet Tracer Color",Desc="Changes the color of your bullet tracer",Flag="BulletTracerColorPicker",Default=v22,Locked=false,Callback=function(v157) v22=v157;end});v29:Space();getgenv().autoshoot_enabled=false;getgenv().max_distance=529 -(73 + 156) ;getgenv().autoshoot_cooldown=1 + 1 ;local v35=nil;v29:Toggle({Title="Enable Autoshoot",Desc="This will automatically shoot enemies for you blatantly.",Icon="check",Default=false,Flag="EnableAutoShootToggle",Callback=function(v158) getgenv().autoshoot_enabled=v158;v28(v158);if v35 then local v347=811 -(721 + 90) ;while true do if (v347==(0 + 0)) then task.cancel(v35);v35=nil;break;end end end if getgenv().autoshoot_enabled then local v348=0;local v349;while true do if ((3 -2)==v348) then v35=task.spawn(function() while getgenv().autoshoot_enabled do local v550=v15.Character;local v551=v550 and v550:FindFirstChild("HumanoidRootPart") ;local v552=v550 and v550:FindFirstChild("Humanoid") ;if (getgenv().match and v551 and v552 and (v552.Health>(470 -(224 + 246)))) then local v600=0;local v601;local v602;while true do if ((0 -0)==v600) then local v681=0 -0 ;while true do if (v681==(0 + 0)) then v601=nil;v602=getgenv().max_distance or (24 + 976) ;v681=1;end if (1==v681) then v600=1 + 0 ;break;end end end if (v600==1) then for v692,v693 in ipairs(v18) do local v694=0 -0 ;local v695;local v696;local v697;while true do if (v694==0) then v695=v693.Character;v696=v695 and v695:FindFirstChild("HumanoidRootPart") ;v694=3 -2 ;end if (v694==(514 -(203 + 310))) then v697=v695 and v695:FindFirstChild("Humanoid") ;if ((v693~=v15) and v697 and (v697.Health>(1993 -(1238 + 755))) and v696) then local v806=0 + 0 ;local v807;while true do if (v806==(1534 -(709 + 825))) then v807=(v696.Position-v551.Position).Magnitude;if (v807<v602) then local v881=0;local v882;local v883;while true do if (v881==1) then if (v882 and v883) then local v912=0 -0 ;while true do if (v912==(0 -0)) then v602=v807;v601=v693;break;end end end break;end if (v881==(864 -(196 + 668))) then v882= not v693.Team or (v693.Team~=v15.Team) ;v883=v14.CFrame.LookVector:Dot((v696.Position-v14.CFrame.Position).Unit)>=(0.9 -0) ;v881=1 -0 ;end end end break;end end end break;end end end if (v601 and v17) then local v715=833 -(171 + 662) ;local v716;local v717;while true do if (v715==(93 -(4 + 89))) then v716=v601.Character;v717=v716 and v716:FindFirstChild("HumanoidRootPart") ;v715=3 -2 ;end if (v715==1) then if (v717 and v349(v551.Position,v717.Position,v550,v716)) then v25(v601);end break;end end end break;end end end task.wait(0.03 + 0 );end end);break;end if (v348==(0 -0)) then local v462=0;while true do if (1==v462) then v348=1;break;end if (v462==(0 + 0)) then v349=nil;function v349(v603,v604,v605,v606) local v607=1486 -(35 + 1451) ;local v608;local v609;local v610;while true do if (v607==0) then v608=1453 -(28 + 1425) ;v609=nil;v607=1;end if (v607==(1994 -(941 + 1052))) then v610=nil;while true do local v698=0 + 0 ;while true do if ((1515 -(822 + 692))==v698) then if (v608==(1 -0)) then v609.FilterType=Enum.RaycastFilterType.Exclude;v610=workspace:Raycast(v603,v604-v603 ,v609);v608=2;end break;end if (0==v698) then if (v608==(0 + 0)) then v609=RaycastParams.new();v609.FilterDescendantsInstances={v605,v606};v608=1 + 0 ;end if (v608==(4 -2)) then local v811=433 -(114 + 319) ;while true do if (v811==(0 -0)) then if v610 then if  not v610.Instance:IsDescendantOf(v606) then return false;end end return true;end end end v698=1 -0 ;end end end break;end end end v462=1;end end end end end end});v29:Slider({Title="Autoshoot Max Distance",Step=1 + 0 ,Flag="AutoshootMaxDistanceSlider",Value={Min=0 -0 ,Max=1000,Default=300},Callback=function(v160) getgenv().max_distance=v160;end});v29:Slider({Title="Cooldown",Step=0.5 -0 ,Flag="AutoshootCooldownSlider",Value={Min=1963.5 -(556 + 1407) ,Max=10,Default=2},Callback=function(v162) getgenv().autoshoot_cooldown=v162;end});v29:Space();getgenv().auto_throw_enabled=false;getgenv().max_distance=1506 -(741 + 465) ;getgenv().throw_cooldown=467 -(170 + 295) ;local v38=nil;local v39=0;local function v40(v164) local v165=0 + 0 ;local v166;local v167;local v168;local v169;while true do if (v165==(1 + 0)) then local v392=0 -0 ;while true do if (v392==1) then v165=2 + 0 ;break;end if (v392==(0 + 0)) then v167=v164:FindFirstChild("HumanoidRootPart");if  not v167 then return;end v392=1 + 0 ;end end end if (v165==0) then v166=game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool");if ( not v166 or  not v166:FindFirstChild("RightHandle")) then return;end v165=1231 -(957 + 273) ;end if ((2 + 2)==v165) then v39=tick();break;end if (v165==(1 + 1)) then local v393=0 -0 ;while true do if (v393==0) then v168=v24(game.Players.LocalPlayer.Character);v169=(v167.Position-v168).Unit;v393=2 -1 ;end if (v393==1) then v165=3;break;end end end if ((9 -6)==v165) then v7.Remotes.ThrowStart:FireServer(v168,v169);require(v7.Modules.KnifeProjectileController)({Speed=v166:GetAttribute("ThrowSpeed"),KnifeProjectile=v166.RightHandle:Clone(),Direction=v169,Origin=v168},function(v443) v7.Remotes.ThrowHit:FireServer(v443 and v443.Instance ,v443 and v443.Position );end);v165=4;end end end local v41=v29:Toggle({Title="Enable auto throw knife",Desc="Automatically throws your knife at enemies",Default=false,Callback=function(v170) local v171=0 -0 ;while true do if (v171==1) then if v170 then v38=task.spawn(function() while getgenv().auto_throw_enabled do local v553=1780 -(389 + 1391) ;while true do if (v553==(0 + 0)) then if ((tick() -v39)>=getgenv().throw_cooldown) then local v682=0 + 0 ;local v683;local v684;while true do if (v682==1) then if v684 then local v791=nil;local v792=getgenv().max_distance;for v812,v813 in v18 do if ((v813~=game.Players.LocalPlayer) and v813.Character and (v813.Team~=v15.Team)) then local v841=0;local v842;local v843;local v844;while true do if (v841==(0 -0)) then v842=0;v843=nil;v841=1;end if (v841==1) then v844=nil;while true do if (v842==(952 -(783 + 168))) then if (v843 and v844 and (v844.Health>(0 -0))) then local v913=0 + 0 ;local v914;local v915;local v916;while true do if (v913==2) then v916=workspace:Raycast(v684.Position,v843.Position-v684.Position ,v915);if ((v914<v792) and  not v916) then local v922=0;while true do if (v922==(311 -(309 + 2))) then v792=v914;v791=v813.Character;break;end end end break;end if (v913==(0 -0)) then local v918=1212 -(1090 + 122) ;while true do if (v918==(0 + 0)) then v914=(v843.Position-v684.Position).Magnitude;v915=RaycastParams.new();v918=3 -2 ;end if (v918==(1 + 0)) then v913=1119 -(628 + 490) ;break;end end end if (v913==(1 + 0)) then v915.FilterDescendantsInstances={v683,v813.Character};v915.FilterType=Enum.RaycastFilterType.Exclude;v913=9 -7 ;end end end break;end if (v842==(774 -(431 + 343))) then local v909=0 -0 ;while true do if ((0 -0)==v909) then v843=v813.Character:FindFirstChild("HumanoidRootPart");v844=v813.Character:FindFirstChild("Humanoid");v909=1 + 0 ;end if (v909==(1 + 0)) then v842=1;break;end end end end break;end end end end if v791 then v40(v791);end end break;end if (v682==(1695 -(556 + 1139))) then v683=game.Players.LocalPlayer.Character;v684=v683 and v683:FindFirstChild("HumanoidRootPart") ;v682=1;end end end task.wait(15.1 -(6 + 9) );break;end end end end);end break;end if (v171==0) then getgenv().auto_throw_enabled=v170;if v38 then local v463=0 + 0 ;local v464;while true do if (v463==(0 + 0)) then v464=169 -(28 + 141) ;while true do if (v464==0) then task.cancel(v38);v38=nil;break;end end break;end end end v171=1 + 0 ;end end end});v29:Slider({Title="Max Throw Distance",Value={Min=0,Max=1234 -234 ,Default=213 + 87 },Callback=function(v172) getgenv().max_distance=v172;end});v29:Slider({Title="Cooldown",Value={Min=1317.5 -(486 + 831) ,Max=26 -16 ,Default=2},Callback=function(v174) getgenv().throw_cooldown=v174;end});v29:Space();getgenv().triggerbot_enabled=false;getgenv().triggerbot_firing=false;getgenv().triggerbot_cooldown=3 -2 ;local function v45(v176) local v177=0 + 0 ;local v178;local v179;local v180;local v181;while true do if (v177==(6 -4)) then v181=v15.Character and v15.Character:FindFirstChild("HumanoidRootPart") ;if  not (v179 and v180 and v181) then return false;end if (v179.Health<=(1263 -(668 + 595))) then return false;end v177=3 + 0 ;end if (v177==0) then if ( not v176 or (v176==v15)) then return false;end v178=v176.Character;if ( not v178 or (v178.Parent~=v8)) then return false;end v177=1 + 0 ;end if (v177==3) then local v396=0 -0 ;while true do if (v396==(290 -(23 + 267))) then if (v9:HasTag(v178,"Invulnerable") or v9:HasTag(v178,"SpeedTrail")) then return false;end return true;end end end if (v177==(1945 -(1129 + 815))) then if (v176.Team and (v176.Team==v15.Team)) then return false;end v179=v178:FindFirstChild("Humanoid");v180=v178:FindFirstChild("HumanoidRootPart");v177=2;end end end local function v46(v182) local v183=387 -(371 + 16) ;local v184;local v185;local v186;local v187;while true do if (v183==0) then local v397=1750 -(1326 + 424) ;while true do if (v397==(0 -0)) then v184=v15.Character;v185=v184 and v184:FindFirstChild("HumanoidRootPart") ;v397=1;end if (v397==(3 -2)) then v183=1;break;end end end if (v183==(119 -(88 + 30))) then v186=v182.Character and v182.Character:FindFirstChild("HumanoidRootPart") ;if  not (v185 and v186) then local v465=0;while true do if (v465==0) then getgenv().triggerbot_firing=false;return;end end end v183=773 -(720 + 51) ;end if (v183==2) then v187=v182.Character:FindFirstChild("LowerTorso") or v182.Character:FindFirstChild("UpperTorso") or v182.Character:FindFirstChild("Head") ;if v187 then v25(v182);else getgenv().triggerbot_firing=false;end break;end end end v10.Heartbeat:Connect(function() local v188=0 -0 ;local v189;local v190;local v191;local v192;local v193;local v194;local v195;while true do if (v188==(1779 -(421 + 1355))) then v193=v8:Raycast(v191.Origin,v191.Direction * (3299 -1299) ,v192);if  not v193 then return;end v194=v193.Instance:FindFirstAncestorOfClass("Model");if  not v194 then return;end v188=2 + 2 ;end if (v188==(1083 -(286 + 797))) then if  not getgenv().triggerbot_enabled then return;end if  not getgenv().match then return;end if getgenv().triggerbot_firing then return;end v189=v15.Character;v188=3 -2 ;end if (v188==(6 -2)) then v195=v5:GetPlayerFromCharacter(v194);if  not v195 then return;end if v45(v195) then local v467=0;while true do if (v467==(440 -(397 + 42))) then task.delay(getgenv().triggerbot_cooldown,function() getgenv().triggerbot_firing=false;end);break;end if (v467==(0 + 0)) then getgenv().triggerbot_firing=true;v46(v195);v467=1;end end end break;end if (v188==1) then if  not v189 then return;end if  not getgenv().match then return;end v190=v11:GetMouseLocation();v191=v14:ViewportPointToRay(v190.X,v190.Y);v188=802 -(24 + 776) ;end if (v188==2) then v192=RaycastParams.new();v192.FilterType=Enum.RaycastFilterType.Exclude;v192.FilterDescendantsInstances={v189};v192.IgnoreWater=true;v188=788 -(222 + 563) ;end end end);v29:Toggle({Title="Trigger Bot",Desc="Automatically shoots when your mouse hovers over an enemy",Icon="check",Default=false,Flag="TriggerBotToggle",Callback=function(v196) local v197=0 -0 ;while true do if (v197==(0 + 0)) then getgenv().triggerbot_enabled=v196;if getgenv().triggerbot_enabled then v28(true);else v28(false);end break;end end end});v29:Slider({Title="Trigger Bot Cooldown",Step=0.1,Flag="TriggerBotCooldownSlider",Value={Min=190 -(23 + 167) ,Max=1801 -(690 + 1108) ,Default=1 + 0 },Callback=function(v198) getgenv().triggerbot_cooldown=v198;end});v29:Space();getgenv().hitbox_expander=false;getgenv().hitbox_size=11 + 2 ;getgenv().hitbox_color=Color3.fromRGB(255,848 -(40 + 808) ,0);v29:Toggle({Title="Enable Hitbox Expander",Desc="Adds hitbox to all enemies",Icon="check",Default=false,Flag="HitboxEnableToggle",Callback=function(v200) local v201=0 + 0 ;while true do if (v201==1) then if  not getgenv().hitbox_expander then local v468=0 -0 ;while true do if (v468==(0 + 0)) then for v612,v613 in v18 do if (v613~=v15) then local v653=0 + 0 ;local v654;local v655;local v656;while true do if (v653==0) then v654=0 + 0 ;v655=nil;v653=572 -(47 + 524) ;end if (v653==1) then v656=nil;while true do if (v654==(0 + 0)) then v655=v613.Character;v656=v655 and v655:FindFirstChild("HumanoidRootPart") ;v654=2 -1 ;end if (v654==1) then if v656 then local v823=0;local v824;while true do if (v823==1) then v824=v656:FindFirstChild("hit_box");if v824 then v824:Destroy();end break;end if ((0 -0)==v823) then v656.Size=Vector3.new(4 -2 ,1728 -(1165 + 561) ,1);v656.CanCollide=false;v823=1 + 0 ;end end end break;end end break;end end end end return;end end end task.spawn(function() while getgenv().hitbox_expander and task.wait(0.1 -0 )  do for v520,v521 in pairs(v5:GetPlayers()) do if ((v521~=v15) and v521.Character) then local v575=v521.Character;local v576=v575:FindFirstChild("HumanoidRootPart");if v576 then local v635=0 + 0 ;local v636;while true do if (v635==(479 -(341 + 138))) then v636=v521.Team~=v15.Team ;if v636 then local v747=0 + 0 ;local v748;while true do if (v747==(0 -0)) then v576.Size=Vector3.new(getgenv().hitbox_size,getgenv().hitbox_size,getgenv().hitbox_size);v576.CanCollide=true;v747=327 -(89 + 237) ;end if (v747==1) then v748=v576:FindFirstChild("hit_box");if  not v748 then local v845=0 -0 ;local v846;while true do if (v845==(1 -0)) then v846.Adornee=v576;v846.AlwaysOnTop=true;v845=883 -(581 + 300) ;end if (v845==(1220 -(855 + 365))) then v846=Instance.new("BoxHandleAdornment");v846.Name="hit_box";v845=1;end if ((9 -5)==v845) then v846.Parent=v576;break;end if (v845==(1 + 1)) then v846.ZIndex=1245 -(1030 + 205) ;v846.Size=v576.Size;v845=3 + 0 ;end if (v845==(3 + 0)) then v846.Color3=getgenv().hitbox_color;v846.Transparency=286.8 -(156 + 130) ;v845=8 -4 ;end end else v748.Size=v576.Size;end break;end end else local v749=0;local v750;while true do if ((0 -0)==v749) then v576.Size=Vector3.new(3 -1 ,1 + 1 ,1);v576.CanCollide=false;v749=1 + 0 ;end if (v749==(70 -(10 + 59))) then v750=v576:FindFirstChild("hit_box");if v750 then v750:Destroy();end break;end end end break;end end end end end end end);break;end if (v201==(0 + 0)) then getgenv().hitbox_expander=v200;if getgenv().hitbox_expander then v28(true);else v28(false);end v201=4 -3 ;end end end});v29:Slider({Title="Hitbox Size",Step=1164 -(671 + 492) ,Flag="HitboxSizeSlider",Value={Min=4 + 1 ,Max=100,Default=1228 -(369 + 846) },Callback=function(v202) getgenv().hitbox_size=v202;end});v29:Colorpicker({Title="Hitbox Color",Default=Color3.fromRGB(68 + 187 ,0 + 0 ,0),Transparency=1945 -(1036 + 909) ,Locked=false,Flag="HitboxColorPicker",Callback=function(v204) getgenv().hitbox_color=v204;end});v29:Space();getgenv().original_cooldowns={};v29:Toggle({Title="Rapid Fire",Desc="You may need to re-equip your weapon for changes to apply",Icon="check",Default=false,Flag="RemoveGunCooldownToggle",Callback=function(v206) local v207=0 + 0 ;while true do if (v207==(1 -0)) then if v206 then local v469=203 -(11 + 192) ;while true do if (v469==(0 + 0)) then getgenv().original_cooldowns={};task.spawn(function() while getgenv().remove_gun_cooldown do local v637=0;local v638;while true do if (v637==(175 -(135 + 40))) then task.wait(0.1 -0 );v638={};v637=1 + 0 ;end if (v637==1) then for v718,v719 in ipairs({v15:FindFirstChild("Backpack"),v15.Character}) do if v719 then for v794,v795 in ipairs(v719:GetChildren()) do if (v795:IsA("Tool") and v795:FindFirstChild("Fire")) then table.insert(v638,v795);end end end end for v720,v721 in ipairs(v638) do local v722=0 -0 ;local v723;while true do if (v722==0) then v723=0;while true do if (0==v723) then if (getgenv().original_cooldowns[v721]==nil) then getgenv().original_cooldowns[v721]=v721:GetAttribute("Cooldown");end if (v721:GetAttribute("Cooldown")~=(0 -0)) then v721:SetAttribute("Cooldown",176 -(50 + 126) );end break;end end break;end end end break;end end end end);break;end end else local v470=0;while true do if ((0 -0)==v470) then for v614,v615 in pairs(getgenv().original_cooldowns) do if (v614 and v614.Parent) then v614:SetAttribute("Cooldown",v615);end end getgenv().original_cooldowns={};break;end end end break;end if (0==v207) then getgenv().remove_gun_cooldown=v206;if getgenv().remove_gun_cooldown then v28(true);else v28(false);end v207=1;end end end});local v51=v2:Tab({Title="Esp Highlights",Icon="eye",Locked=false});getgenv().esp_team_color=Color3.fromRGB(0 + 0 ,255,1413 -(1233 + 180) );getgenv().esp_enemy_color=Color3.fromRGB(1224 -(522 + 447) ,1421 -(107 + 1314) ,0 + 0 );getgenv().esp_charms_highlighter=false;local v55=v6:FindFirstChild("Highlights") or Instance.new("Folder") ;v55.Name="CharmsESP";v55.Parent=v6;v51:Toggle({Title="Enable Charms",Desc="Highlights players full body",Icon="check",Default=false,Flag="EspCharmsToggle",Callback=function(v208) local v209=0;while true do if (v209==1) then task.spawn(function() while getgenv().esp_charms_highlighter do local v471=0 -0 ;while true do if (v471==(0 + 0)) then task.wait(0.1);for v616,v617 in v18 do if  not getgenv().esp_charms_highlighter then break;end if (v617~=v15) then local v657=0 -0 ;local v658;while true do if (v657==0) then v658=v617.Character;if v658 then local v771=0 -0 ;local v772;local v773;while true do if (v771==(1911 -(716 + 1194))) then v773=((v617.Team==v15.Team) and getgenv().esp_team_color) or getgenv().esp_enemy_color ;v772.FillColor=v773;v771=1 + 1 ;end if (v771==(1 + 1)) then v772.OutlineColor=v773;v772.Adornee=v658;break;end if (v771==(503 -(74 + 429))) then v772=v55:FindFirstChild(v617.Name);if  not v772 then local v863=0 -0 ;while true do if (v863==(1 + 1)) then v772.DepthMode=Enum.HighlightDepthMode.AlwaysOnTop;v772.Parent=v55;break;end if (v863==0) then v772=Instance.new("Highlight");v772.Name=v617.Name;v863=2 -1 ;end if (v863==1) then v772.FillTransparency=0.6;v772.OutlineTransparency=0.4 + 0 ;v863=5 -3 ;end end end v771=1;end end end break;end end end end break;end end end end);break;end if (v209==(0 -0)) then getgenv().esp_charms_highlighter=v208;if  not getgenv().esp_charms_highlighter then local v472=433 -(279 + 154) ;while true do if (v472==0) then v28(false);for v618,v619 in ipairs(v55:GetChildren()) do v619:Destroy();end v472=779 -(454 + 324) ;end if (v472==(1 + 0)) then return;end end else v28(true);end v209=1;end end end});getgenv().esp_skeleton=false;local v59=v6:FindFirstChild("Skeletons") or Instance.new("Folder") ;v59.Name="Skeletons";v59.Parent=v6;v51:Toggle({Title="Enable Skeleton",Desc="Highlights players skeleton",Icon="check",Default=false,Flag="EspSkeletonToggle",Callback=function(v210) local v211=17 -(12 + 5) ;local v212;while true do if (v211==(1 + 0)) then function v212() for v473,v474 in ipairs(v59:GetChildren()) do v474:Destroy();end end if  not v210 then local v475=0 -0 ;local v476;while true do if (v475==0) then v476=0 + 0 ;while true do if (v476==(1094 -(277 + 816))) then return;end if (v476==(0 -0)) then v212();v28(false);v476=1;end end break;end end else v28(true);end v211=1185 -(1058 + 125) ;end if (v211==(0 + 0)) then getgenv().esp_skeleton=v210;v212=nil;v211=1;end if (v211==(977 -(815 + 160))) then task.spawn(function() local function v444() local v477=0 -0 ;local v478;while true do if (v477==(0 -0)) then v478=Instance.new("LineHandleAdornment");v478.Thickness=2;v477=1;end if (v477==(1 + 0)) then v478.ZIndex=29 -19 ;v478.AlwaysOnTop=true;v477=2;end if (v477==2) then return v478;end end end local v445={{"Head","UpperTorso"},{"UpperTorso","LowerTorso"},{"UpperTorso","LeftUpperArm"},{"LeftUpperArm","LeftLowerArm"},{"LeftLowerArm","LeftHand"},{"UpperTorso","RightUpperArm"},{"RightUpperArm","RightLowerArm"},{"RightLowerArm","RightHand"},{"LowerTorso","LeftUpperLeg"},{"LeftUpperLeg","LeftLowerLeg"},{"LeftLowerLeg","LeftFoot"},{"LowerTorso","RightUpperLeg"},{"RightUpperLeg","RightLowerLeg"},{"RightLowerLeg","RightFoot"}};while getgenv().esp_skeleton do task.wait(0.1 -0 );for v522,v523 in v18 do local v524=0;local v525;local v526;while true do if (v524==(1832 -(1552 + 280))) then v525=v523.Character;v526=v59:FindFirstChild(v523.Name);v524=835 -(64 + 770) ;end if (v524==(1 + 0)) then if (v525 and v525:FindFirstChild("HumanoidRootPart") and v525:FindFirstChild("Humanoid") and (v525.Humanoid.Health>0)) then local v659=0;local v660;while true do if (v659==(0 -0)) then if  not v526 then local v774=0 + 0 ;while true do if ((1244 -(157 + 1086))==v774) then v526.Parent=v59;break;end if (v774==(0 -0)) then v526=Instance.new("Folder");v526.Name=v523.Name;v774=4 -3 ;end end end v660=((v523.Team==v15.Team) and getgenv().esp_team_color) or getgenv().esp_enemy_color ;v659=1 -0 ;end if (v659==(1 -0)) then for v751,v752 in ipairs(v445) do local v753,v754=v525:FindFirstChild(v752[820 -(599 + 220) ]),v525:FindFirstChild(v752[3 -1 ]);if (v753 and v754) then local v796=1931 -(1813 + 118) ;local v797;while true do if (v796==(2 + 0)) then v797.CFrame=CFrame.new(Vector3.zero,v753.CFrame:PointToObjectSpace(v754.Position));v797.Length=(v753.Position-v754.Position).Magnitude;v796=3;end if (v796==0) then v797=v526:FindFirstChild(tostring(v751)) or v444() ;v797.Name=tostring(v751);v796=1218 -(841 + 376) ;end if (v796==(1 -0)) then v797.Color3=v660;v797.Adornee=v753;v796=1 + 1 ;end if (v796==(8 -5)) then v797.Parent=v526;break;end end end end break;end end elseif v526 then v526:Destroy();end break;end end end for v527,v528 in ipairs(v59:GetChildren()) do if  not v5:FindFirstChild(v528.Name) then v528:Destroy();end end end v212();end);break;end end end});getgenv().esp_tracers=false;local v63=v6:FindFirstChild("Tracers") or Instance.new("Folder") ;v63.Name="Tracers";v63.Parent=v6;local v10=game:GetService("RunService");local v66=nil;v51:Toggle({Title="Enable Tracers",Desc="Draws lines from your character to others smoothly.",Icon="check",Default=false,Flag="EspTracersToggle",Callback=function(v213) getgenv().esp_tracers=v213;local function v215() for v350,v351 in ipairs(v63:GetChildren()) do v351:Destroy();end end if v66 then local v352=859 -(464 + 395) ;local v353;while true do if (v352==(0 -0)) then v353=0 + 0 ;while true do if ((837 -(467 + 370))==v353) then v66:Disconnect();v66=nil;break;end end break;end end end if  not v213 then local v354=0;while true do local v408=0 -0 ;while true do if (v408==(0 + 0)) then if (v354==(3 -2)) then return;end if (v354==0) then v215();if v28 then v28(false);end v354=1;end break;end end end elseif v28 then v28(true);end v66=v10.RenderStepped:Connect(function() if  not getgenv().esp_tracers then local v409=0;local v410;while true do if (v409==(0 + 0)) then v410=0 -0 ;while true do local v554=520 -(150 + 370) ;while true do if (v554==0) then if (v410==(1282 -(74 + 1208))) then if v66 then local v725=0 -0 ;while true do if (v725==0) then v66:Disconnect();v66=nil;break;end end end v215();v410=4 -3 ;end if ((1 + 0)==v410) then return;end break;end end end break;end end end local v336=v15.Character;local v337=v336 and v336:FindFirstChild("HumanoidRootPart") ;if v337 then for v446,v447 in ipairs(v18) do if ((v447~=v15) and v447.Parent) then local v529=0;local v530;local v531;while true do if (v529==(390 -(14 + 376))) then v530=v447.Character;v531=v63:FindFirstChild(v447.Name);v529=1 -0 ;end if (v529==(1 + 0)) then if (v530 and v530:FindFirstChild("HumanoidRootPart") and v530:FindFirstChild("Humanoid") and (v530.Humanoid.Health>0)) then local v661=0 + 0 ;local v662;local v663;while true do if (v661==2) then v531.Adornee=workspace.Terrain;v531.CFrame=CFrame.lookAt(v337.Position,v662.Position);v661=3 + 0 ;end if (v661==0) then if  not v531 then local v775=0 -0 ;local v776;while true do if (v775==(0 + 0)) then v776=78 -(23 + 55) ;while true do if (0==v776) then v531=Instance.new("LineHandleAdornment");v531.Name=v447.Name;v776=2 -1 ;end if (v776==(1 + 0)) then v531.Thickness=1.5 + 0 ;v531.ZIndex=15 -5 ;v776=2;end if (v776==2) then v531.AlwaysOnTop=true;v531.Parent=v63;break;end end break;end end end v662=v530.HumanoidRootPart;v661=1;end if ((1 + 2)==v661) then v531.Length=(v337.Position-v662.Position).Magnitude;break;end if (v661==(902 -(652 + 249))) then v663=((v447.Team==v15.Team) and getgenv().esp_team_color) or getgenv().esp_enemy_color ;v531.Color3=v663;v661=5 -3 ;end end elseif v531 then v531:Destroy();end break;end end end end else v215();end for v355,v356 in ipairs(v63:GetChildren()) do if  not v5:FindFirstChild(v356.Name) then v356:Destroy();end end end);end});v51:Colorpicker({Title="Team Color Highlight",Desc="Esp color for teammates",Default=Color3.fromRGB(1868 -(708 + 1160) ,692 -437 ,0 -0 ),Transparency=0,Locked=false,Flag="EspTeamColorPicker",Callback=function(v216) getgenv().esp_team_color=v216;end});v51:Colorpicker({Title="Enemy Color Highlight",Desc="Esp color for enemies",Default=Color3.fromRGB(255,0,27 -(10 + 17) ),Transparency=0 + 0 ,Locked=false,Flag="EspEnemyColorPicker",Callback=function(v218) getgenv().esp_enemy_color=v218;end});local v67=v2:Tab({Title="Rage",Icon="skull",Locked=false});getgenv().autoKillGun=false;getgenv().gunAimkillCooldown=0.1;v67:Button({Title="[GUN] Aimkill Once",Desc="Kills all players in your server once",Locked=false,Callback=function() if getgenv().match then local v357=game:GetService("Players");local v358=v357.LocalPlayer;local v359=v358:GetAttribute("Match");if v359 then local v448=1732 -(1400 + 332) ;while true do if (v448==(1 -0)) then for v582,v583 in v18 do local v584=0;while true do if (v584==(1908 -(242 + 1666))) then if ((v583.Team~=v358.Team) and v583.Character and v583.Character:FindFirstChild("HumanoidRootPart")) then local v699=0 + 0 ;local v700;local v701;while true do if (v699==(1 + 0)) then if v701 then local v818=0;local v819;while true do if (v818==(0 + 0)) then v819=v7:WaitForChild("Remotes"):WaitForChild("ShootGun");v819:FireServer(v701.Position,v700.Position,v700,v700.Position);break;end end end break;end if (v699==(940 -(850 + 90))) then local v777=0 -0 ;while true do if (v777==1) then v699=1391 -(360 + 1030) ;break;end if (v777==(0 + 0)) then v700=v583.Character.HumanoidRootPart;v701=v358.Character and v358.Character:FindFirstChild("HumanoidRootPart") ;v777=2 -1 ;end end end end end task.wait(0.1 -0 );break;end end end break;end if (v448==(1661 -(909 + 752))) then v20();v1:Notify({Title="Killing all players!",Content="Enjoying Ruleless Enchantment? Join our discord server located in the Welcome tab for even better stuff!",Duration=1226 -(109 + 1114) ,Icon="rbxassetid://99922487160426"});v448=1 -0 ;end end end end end});v67:Toggle({Title="[GUN] Aimkill",Desc="Kills everyone constantly in your server with gun",Value=false,Callback=function(v220) local v221=0;while true do if ((0 + 0)==v221) then getgenv().autoKillGun=v220;if v220 then v28(true);else v28(false);end break;end end end});v67:Slider({Title="[GUN] Aimkill Cooldown",Desc="Delay between each shot (0.01 = fastest, 0.2 = safest)",Step=242.01 -(6 + 236) ,Value={Min=0.01 + 0 ,Max=0.2 + 0 ,Default=0.1 -0 },Flag="GunAimkillCooldown",Callback=function(v222) getgenv().gunAimkillCooldown=v222;end});local function v70() local v224=0 -0 ;local v225;while true do if (0==v224) then v225={};for v449,v450 in ipairs({v15:FindFirstChild("Backpack"),v15.Character}) do if v450 then for v555,v556 in ipairs(v450:GetChildren()) do if (v556:IsA("Tool") and v556:FindFirstChild("Fire")) then table.insert(v225,v556);end end end end v224=1 + 0 ;end if (v224==(690 -(579 + 110))) then for v451,v452 in ipairs(v225) do if (v452:GetAttribute("Cooldown")~=(0 + 0)) then v452:SetAttribute("Cooldown",0);end end break;end end end task.spawn(function() while true do local v338=0 + 0 ;while true do if (v338==0) then if getgenv().autoKillGun then local v532=0 + 0 ;local v533;while true do if (v532==(407 -(174 + 233))) then v533=v15:GetAttribute("Match");if v533 then local v664=0 -0 ;local v665;while true do if (v664==(1 -0)) then v70();v20();v664=2;end if (v664==(1 + 1)) then for v755,v756 in v18 do local v757=1174 -(663 + 511) ;local v758;while true do if (v757==(0 + 0)) then v758=0;while true do if (v758==(0 + 0)) then if (v756.Character and v756.Character:FindFirstChild("HumanoidRootPart")) then local v894=0 -0 ;local v895;local v896;while true do if (v894==(1 + 0)) then if v896 then v7.Remotes.ShootGun:FireServer(v896.Position,v895.Position,v895,v895.Position);end break;end if (v894==(0 -0)) then v895=v756.Character.HumanoidRootPart;v896=v15.Character and v15.Character:FindFirstChild("HumanoidRootPart") ;v894=2 -1 ;end end end task.wait(getgenv().gunAimkillCooldown or (0.01 + 0) );break;end end break;end end end break;end if (v664==(0 -0)) then local v733=0 + 0 ;while true do if (v733==0) then v665=v15.Character and v15.Character:FindFirstChild("HumanoidRootPart") ;if v665 then v665.CFrame=CFrame.new(47, -(5 + 47), -(995 -(478 + 244)));end v733=1;end if (v733==1) then v664=1;break;end end end end end break;end end end task.wait(517.1 -(440 + 77) );break;end end end end);getgenv().autoKillKnife=false;v67:Button({Title="[KNIFE] Aimkill Once",Desc="Kills all players in your server once",Locked=false,Callback=function() if getgenv().match then local v360=game:GetService("Players");local v361=v360.LocalPlayer;local v362=v361:GetAttribute("Match");if v362 then local v453=0 + 0 ;while true do if ((3 -2)==v453) then for v585,v586 in ipairs(v5:GetPlayers()) do local v587=1556 -(655 + 901) ;local v588;while true do if (v587==(0 + 0)) then v588=0 + 0 ;while true do if (v588==(0 + 0)) then if ((v586~=v361) and v586.Character) then local v778=0 -0 ;local v779;local v780;while true do if (v778==(1445 -(695 + 750))) then local v833=0 -0 ;while true do if (v833==(1 -0)) then v778=3 -2 ;break;end if (v833==(351 -(285 + 66))) then v779=v586.Character:FindFirstChild("Humanoid");v780=v586.Character:FindFirstChild("HumanoidRootPart");v833=2 -1 ;end end end if (v778==(1311 -(682 + 628))) then if (v779 and (v779.Health>(0 + 0)) and v780) then local v864=299 -(176 + 123) ;local v865;while true do if (v864==(0 + 0)) then v865=v7:WaitForChild("Remotes"):WaitForChild("ThrowHit");v865:FireServer(v780,v780.Position);break;end end end break;end end end task.wait(0.1 + 0 );break;end end break;end end end break;end if (v453==(269 -(239 + 30))) then v21();v1:Notify({Title="Killing all players!",Content="Enjoying Ruleless Enchantment? Join our discord server located in the Welcome tab for even better stuff!",Duration=1 + 2 ,Icon="rbxassetid://99922487160426"});v453=1;end end end end end});v67:Toggle({Title="[KNIFE] Aimkill",Desc="Kills everyone constantly in your server with knife",Value=false,Callback=function(v226) local v227=0 + 0 ;while true do if (v227==0) then getgenv().autoKillKnife=v226;if v226 then v28(true);else v28(false);end break;end end end});task.spawn(function() local v228=game:GetService("Players");local v229=v228.LocalPlayer;while true do local v339=0 -0 ;local v340;while true do if ((0 -0)==v339) then v340=315 -(306 + 9) ;while true do if (v340==(0 -0)) then if getgenv().autoKillKnife then local v622=0 + 0 ;local v623;while true do if (0==v622) then v623=v229:GetAttribute("Match");if v623 then local v734=0;local v735;while true do if ((1 + 0)==v734) then v21();for v820,v821 in v18 do if ((v821~=v229) and v821.Character) then local v856=v821.Character:FindFirstChild("Humanoid");local v857=v821.Character:FindFirstChild("HumanoidRootPart");if (v856 and (v856.Health>(0 + 0)) and v857) then local v878=0 -0 ;local v879;while true do if (v878==(1375 -(1140 + 235))) then v879=v7:WaitForChild("Remotes"):WaitForChild("ThrowHit");v879:FireServer(v857,v857.Position);break;end end end end end break;end if (v734==(0 + 0)) then v735=v15.Character and v15.Character:FindFirstChild("HumanoidRootPart") ;if v735 then v735.CFrame=CFrame.new(47, -(48 + 4), -(71 + 202));end v734=1;end end end break;end end end task.wait();break;end end break;end end end end);local v72=v2:Tab({Title="Abilitys",Icon="zap",Locked=false});getgenv().autoShroud=false;getgenv().lowExecutorsShroud=false;getgenv().shroudRate=1;local v76,v77=pcall(function() return require(game:GetService("ReplicatedStorage").Ability.AbilityConfig);end);local v78=v7.Ability:WaitForChild("ActivateShroud");local v79= not v76;local v80={SprintCooldown=( not v79 and v77.SprintCooldown) or (67 -(33 + 19)) ,DashCooldown=( not v79 and v77.DashCooldown) or 6 ,ShroudCooldown=( not v79 and v77.ShroudCooldown) or 7 ,SoulReapCombatDelay=( not v79 and v77.SoulReapCombatDelay) or (0.35 + 0) };if v79 then v41:Lock();end local function v81(v230) local v231=0;local v232;while true do if (v231==(0 -0)) then v232=v5.LocalPlayer.Character;if (v230 and v230.Character and v232) then local v479=0;local v480;local v481;while true do if (v479==(1 + 0)) then if (v480 and v481) then local v639=0 -0 ;local v640;local v641;while true do if (v639==(0 + 0)) then v640=nil;v641=nil;v639=690 -(586 + 103) ;end if (v639==1) then if getgenv().lowExecutorsShroud then local v759=0 + 0 ;local v760;while true do if (v759==(0 -0)) then v760=1488 -(1309 + 179) ;while true do if ((0 -0)==v760) then v640=v481.Position;v641=(v480.Position-v640).Unit;v760=1 + 0 ;end if (v760==1) then v78:FireServer(v640,v641);break;end end break;end end else local v761,v762=pcall(function() return require(v7.Modules.CharacterRayOrigin);end);local v763,v764=pcall(function() return require(v7.Ability.ShroudProjectileController);end);if (v761 and v763) then local v798=0 -0 ;local v799;while true do if ((0 + 0)==v798) then v799=0 -0 ;while true do if (v799==1) then v78:FireServer(v640,v641);v764(v640,v641);break;end if (v799==(0 -0)) then v640=v762(v232);v641=(v480.Position-v640).Unit;v799=610 -(295 + 314) ;end end break;end end else local v800=0 -0 ;while true do if ((1962 -(1300 + 662))==v800) then getgenv().lowExecutorsShroud=true;v640=v481.Position;v800=3 -2 ;end if (v800==1) then v641=(v480.Position-v640).Unit;v78:FireServer(v640,v641);break;end end end end break;end end end break;end if (v479==(1755 -(1178 + 577))) then local v589=0 + 0 ;while true do if (v589==0) then v480=v230.Character:FindFirstChild("HumanoidRootPart");v481=v232:FindFirstChild("HumanoidRootPart");v589=2 -1 ;end if (v589==1) then v479=1406 -(851 + 554) ;break;end end end end end break;end end end v72:Toggle({Title="Auto Shroud All",Desc="Automatically blinds all enemies in match",Value=false,Callback=function(v233) getgenv().autoShroud=v233;end});v72:Toggle({Title="Low Executor Mode",Desc="Supports all executors, may not notice shroud box/sound but blinds enemy and saves FPS",Value=false,Callback=function(v235) getgenv().lowExecutorsShroud=v235;end});v72:Slider({Title="Amount of Shrouds per Enemy",Desc="Adjust firing rate per enemy, a high number increases fps for entire game",Step=0.1 + 0 ,Value={Min=1,Max=27733 -17733 ,Default=1 -0 },Callback=function(v237) getgenv().shroudRate=v237;end});task.spawn(function() while true do if getgenv().autoShroud then local v414=0;local v415;while true do if (v414==(302 -(115 + 187))) then local v534=0 + 0 ;while true do if (v534==(1 + 0)) then v414=3 -2 ;break;end if (v534==(1161 -(160 + 1001))) then v415=v5.LocalPlayer:GetAttribute("Match");for v642,v643 in v18 do v81(v643);end v534=1 + 0 ;end end end if (v414==1) then task.wait(1/getgenv().shroudRate );break;end end else task.wait(0.5 + 0 );end end end);v72:Space();task.spawn(function() if  not v79 then v4:Destroy();end end);v72:Toggle({Title="Remove Sprint Cooldown",Locked=v79,Value=false,Callback=function(v239) local v240=0;while true do if (v240==(0 -0)) then if v239 then v28(true);else v28(false);end if  not v79 then v77.SprintCooldown=(v239 and 0) or v80.SprintCooldown ;else v27();end break;end end end});v72:Toggle({Title="Remove Dash Cooldown",Locked=v79,Value=false,Callback=function(v241) local v242=358 -(237 + 121) ;while true do if (v242==(897 -(525 + 372))) then if v241 then v28(true);else v28(false);end if  not v79 then v77.DashCooldown=(v241 and 0) or v80.DashCooldown ;else v27();end break;end end end});v72:Toggle({Title="Remove Shroud Cooldown",Locked=v79,Value=false,Callback=function(v243) local v244=0 -0 ;while true do if (v244==(0 -0)) then if v243 then v28(true);else v28(false);end if  not v79 then v77.ShroudCooldown=(v243 and 0) or v80.ShroudCooldown ;else v27();end break;end end end});v72:Toggle({Title="Remove Soul Reap Combat Delay",Locked=v79,Value=false,Callback=function(v245) local v246=142 -(96 + 46) ;while true do if (0==v246) then if v245 then v28(true);else v28(false);end if  not v79 then v77.SoulReapCombatDelay=(v245 and (777 -(643 + 134))) or v80.SoulReapCombatDelay ;else v27();end break;end end end});v72:Space();v72:Slider({Title="Sprint Time",Step=0.5,Locked=v79,Value={Min=0.5 + 0 ,Max=10,Default=( not v79 and v77.SprintTime) or 0 },Callback=function(v247) if  not v79 then v77.SprintTime=v247;else v27();end end});v72:Slider({Title="Sprint Boost",Step=0.1 -0 ,Locked=v79,Value={Min=0 -0 ,Max=5,Default=( not v79 and v77.SprintBoost) or (0 + 0) },Callback=function(v248) if  not v79 then v77.SprintBoost=v248;else v27();end end});v72:Slider({Title="Soul Reap Time",Step=0.5 -0 ,Locked=v79,Value={Min=0.5,Max=20 -10 ,Default= not v79 and v77.SoulReapTime },Callback=function(v249) if  not v79 then v77.SoulReapTime=v249;else v27();end end});v72:Slider({Title="Soul Reap Speed Boost",Step=719.1 -(316 + 403) ,Locked=v79,Value={Min=0.1 + 0 ,Max=10,Default=( not v79 and v77.SoulReapSpeedBoost) or (0 -0) },Callback=function(v250) if  not v79 then v77.SoulReapSpeedBoost=v250;else v27();end end});v72:Slider({Title="Propeller Jump Boost",Step=0.1,Locked=v79,Value={Min=0.1 + 0 ,Max=12 -7 ,Default=( not v79 and v77.PropellerJumpBoost) or (0 + 0) },Callback=function(v251) if  not v79 then v77.PropellerJumpBoost=v251;else v27();end end});v72:Slider({Title="Shroud Time",Step=0.5 + 0 ,Locked=v79,Value={Min=0.5,Max=34 -24 ,Default=( not v79 and v77.ShroudTime) or 0 },Callback=function(v252) if  not v79 then v77.ShroudTime=v252;else v27();end end});v72:Slider({Title="Shroud Projectile Speed",Step=9.5 -7 ,Locked=v79,Value={Min=2.5,Max=100,Default=( not v79 and v77.ShroudProjectileSpeed) or (0 -0) },Callback=function(v253) if  not v79 then v77.ShroudProjectileSpeed=v253;else v27();end end});v72:Slider({Title="Shroud Projectile Range",Step=1 + 4 ,Locked=v79,Value={Min=9 -4 ,Max=49 + 951 ,Default=( not v79 and v77.ShroudProjectileRange) or (0 -0) },Callback=function(v254) if  not v79 then v77.ShroudProjectileRange=v254;else v27();end end});local v82=v2:Tab({Title="Teleport",Icon="map-pin",Locked=false});local v83=workspace:WaitForChild("Lobby");local v84={DuelRing_1v1=18 -(12 + 5) ,DuelRing_2v2=2,DuelRing_3v3=3,DuelRing_4v4=15 -11 };local v85=false;local v86=nil;local v87=0 -0 ;local function v88(v255) local v256=0 -0 ;local v257;local v258;local v259;while true do if (v256==0) then v257=v15.Character;if  not v257 then return;end v256=2 -1 ;end if (v256==(1 + 1)) then if (v258 and v259 and v255 and v255.PrimaryPart) then local v486=0;local v487;local v488;local v489;while true do if (v486==0) then v487=1973 -(1656 + 317) ;v488=nil;v486=1 + 0 ;end if (v486==(1 + 0)) then v489=nil;while true do if (1==v487) then if (v489<=6) then local v702=0 -0 ;while true do if (v702==(4 -3)) then return;end if (v702==0) then getgenv().noclip=false;for v801,v802 in ipairs(v257:GetDescendants()) do if v802:IsA("BasePart") then v802.CanCollide=true;end end v702=355 -(5 + 349) ;end end end v258.WalkSpeed=166 -131 ;v487=1273 -(266 + 1005) ;end if (v487==(0 + 0)) then v488=v255.PrimaryPart.Position;v489=(v259.Position-v488).Magnitude;v487=3 -2 ;end if (v487==3) then getgenv().noclip=true;for v685,v686 in ipairs(v257:GetDescendants()) do if v686:IsA("BasePart") then v686.CanCollide=false;end end break;end if (v487==(2 -0)) then v258:MoveTo(v488);if ((os.clock() -v87)>=2) then local v703=1696 -(561 + 1135) ;local v704;while true do if (v703==(0 -0)) then v704=0 -0 ;while true do if (v704==0) then v258.Jump=true;v87=os.clock();break;end end break;end end end v487=1069 -(507 + 559) ;end end break;end end end break;end if (v256==(2 -1)) then v258=v257:FindFirstChildOfClass("Humanoid");v259=v257:FindFirstChild("HumanoidRootPart");v256=2;end end end v82:Toggle({Title="Enable auto walk to duel pads",Desc="Automatically walks to an available duel pad accurately",Default=false,Flag="AutoWalkDuelPadToggle",Callback=function(v260) v85=v260;end});v82:Space();task.spawn(function() while true do if (executionID~=_G.executionID) then break;end if  not v15:GetAttribute("Match") then if v85 then local v490=v15.Character;local v491=v490 and v490:FindFirstChild("HumanoidRootPart") ;if (v86 and v491) then local v557=0 -0 ;local v558;while true do if (v557==1) then if (v558==(389 -(212 + 176))) then local v687=905 -(250 + 655) ;local v688;while true do if (v687==0) then local v765=0 -0 ;while true do if (v765==(0 -0)) then v688=false;for v837,v838 in ipairs(game:GetService("Players"):GetPlayers()) do if ((v838~=v15) and v838.Character) then local v868=v838.Character:FindFirstChild("HumanoidRootPart");if v868 then local v898=(v491.Position-v868.Position).Magnitude;if (v898<=(12 -4)) then v688=true;break;end end end end v765=1957 -(1869 + 87) ;end if (v765==(3 -2)) then v687=1902 -(484 + 1417) ;break;end end end if (v687==1) then if  not v688 then v86=nil;end break;end end end break;end if (v557==(0 -0)) then local v644=0 -0 ;while true do if (v644==(773 -(48 + 725))) then v558=1;for v737,v738 in pairs(v84) do if (v83:FindFirstChild("DuelRingsGroup") and v83.DuelRingsGroup:FindFirstChild(v737)) then if v83.DuelRingsGroup[v737]:FindFirstChild(v86.Name) then v558=v738;break;end end end v644=1 -0 ;end if (v644==(2 -1)) then v557=1 + 0 ;break;end end end end end if (v86 and v491) then local v559=0 -0 ;local v560;while true do if (v559==1) then if  not v560 then v86=nil;end break;end if (v559==0) then v560=false;for v670,v671 in ipairs(v83:GetChildren()) do if (v671.Name=="DuelRingsGroup") then for v739,v740 in pairs(v84) do local v741=v671:FindFirstChild(v739);if (v741 and v741:FindFirstChild(v86.Name)) then local v782=0;local v783=v740 * (1 + 1) ;local v784=false;for v803,v804 in ipairs(v741:GetChildren()) do if (v804:IsA("Model") and (v804.Name=="DuelPad")) then local v839=0 + 0 ;local v840;while true do if ((854 -(152 + 701))==v839) then if ((v804==v86) and (v840<v740)) then v784=true;end break;end if (0==v839) then v840=v804:GetAttribute("CharacterCount") or (1311 -(430 + 881)) ;v782=v782 + v840 ;v839=1 + 0 ;end end end end if (((v782==(v783-(896 -(557 + 338)))) and v784) or (v782==v783)) then v560=true;end break;end end end if v560 then break;end end v559=1 + 0 ;end end end if  not v86 then local v561=false;for v590,v591 in ipairs(v83:GetChildren()) do if (v591.Name=="DuelRingsGroup") then for v672,v673 in pairs(v84) do local v674=v591:FindFirstChild(v672);if v674 then local v705={};local v706=0;local v707=v673 * (5 -3) ;for v742,v743 in ipairs(v674:GetChildren()) do if (v743:IsA("Model") and (v743.Name=="DuelPad")) then local v785=0;local v786;while true do if (v785==1) then table.insert(v705,{model=v743,count=v786});break;end if (v785==0) then v786=v743:GetAttribute("CharacterCount") or (0 -0) ;v706=v706 + v786 ;v785=2 -1 ;end end end end if (v706==(v707-1)) then for v787,v788 in ipairs(v705) do if (v788.count<v673) then local v822=true;if (v673==(2 -1)) then local v861=801 -(499 + 302) ;while true do if ((866 -(39 + 827))==v861) then v822=false;for v906,v907 in ipairs(game:GetService("Players"):GetPlayers()) do if ((v907~=v15) and v907.Character) then local v911=v907.Character:FindFirstChild("HumanoidRootPart");if (v911 and v788.model.PrimaryPart) then local v917=(v911.Position-v788.model.PrimaryPart.Position).Magnitude;if (v917<=8) then v822=true;break;end end end end break;end end end if v822 then v88(v788.model);if (v491 and v788.model.PrimaryPart) then local v880=(v491.Position-v788.model.PrimaryPart.Position).Magnitude;if (v880<=(16 -10)) then v86=v788.model;end end v561=true;task.wait(0.5 -0 );break;end end end end end if v561 then break;end end end if v561 then break;end end end else v86=nil;end else v86=nil;end task.wait(0.2 -0 );end end);if (v83 and v83:FindFirstChild("DuelRingsGroup")) then for v371,v372 in pairs(v84) do local v373=0;local v374;while true do if (v373==(0 -0)) then v374=v83.DuelRingsGroup:FindFirstChild(v371);if v374 then local v562=0 + 0 ;local v563;while true do if (v562==(0 -0)) then v563=1 + 0 ;for v675,v676 in ipairs(v374:GetChildren()) do if (v676:IsA("Model") and (v676.Name=="DuelPad")) then local v708=(((v563%(2 -0))==(105 -(103 + 1))) and "Right") or "Left" ;local v709="Walk to "   .. v371   .. " "   .. v708 ;v82:Button({Title=v709,Locked=false,Callback=function() local v744=0;while true do if (v744==(554 -(475 + 79))) then v1:Notify({Title="Walking to position!",Content="Enjoying Ruleless Enchantment? Join our discord server located in the Welcome tab for even better stuff!",Duration=6 -3 ,Icon="rbxassetid://99922487160426"});v88(v676);break;end end end});v563=v563 + 1 ;end end break;end end end break;end end end end local v89=v2:Tab({Title="FOV Shooting",Icon="crosshair",Locked=false});local v90=false;local v91=false;local v92=false;local v93=100;local v94=1;local v95=0 -0 ;local v96=nil;local v97=nil;local v98=nil;local v99=nil;local function v100() local v261=0 + 0 ;while true do if (v261==0) then if v96 then v96:Remove();end v96=Drawing.new("Circle");v261=1 + 0 ;end if (v261==4) then v96.Filled=false;break;end if (v261==(1505 -(1395 + 108))) then v96.Radius=v93;v96.Color=Color3.fromRGB(742 -487 ,1459 -(7 + 1197) ,255);v261=2 + 1 ;end if (v261==(2 + 1)) then v96.Transparency=1;v96.Visible=false;v261=4;end if (v261==(320 -(27 + 292))) then v96.Thickness=5 -3 ;v96.NumSides=80 -16 ;v261=8 -6 ;end end end v100();local function v101() if (v96 and (v92 or v90 or v91)) then local v375=0;local v376;while true do if (v375==(0 -0)) then v376=v11:GetMouseLocation();v96.Position=Vector2.new(v376.X,v376.Y);v375=1 -0 ;end if (v375==1) then v96.Radius=v93;v96.Visible=true;break;end end elseif v96 then v96.Visible=false;end end local function v102(v262) local v263=139 -(43 + 96) ;local v264;local v265;local v266;local v267;while true do if (v263==(8 -6)) then return v267<=v93 ;end if (v263==(0 -0)) then local v424=0 + 0 ;while true do if (v424==1) then v263=1 + 0 ;break;end if (v424==(0 -0)) then v264,v265=v14:WorldToViewportPoint(v262);if  not v265 then return false;end v424=1 + 0 ;end end end if ((1 -0)==v263) then v266=v11:GetMouseLocation();v267=math.sqrt(((v264.X-v266.X)^(1 + 1)) + ((v264.Y-v266.Y)^2) );v263=2;end end end local function v103(v268,v269,v270) local v271=0 + 0 ;local v272;local v273;while true do if (v271==(1751 -(1414 + 337))) then v272=RaycastParams.new();v272.FilterDescendantsInstances={v15.Character,v270};v271=2 -1 ;end if (1==v271) then v272.FilterType=Enum.RaycastFilterType.Exclude;v273=v8:Raycast(v268,v269-v268 ,v272);v271=2;end if (v271==(5 -3)) then if v273 then if  not v273.Instance:IsDescendantOf(v270) then return false;end end return true;end end end local function v104(v274) local v275=0 -0 ;local v276;local v277;local v278;local v279;while true do local v341=0;while true do if (v341==(0 + 0)) then if (v275==(1 + 0)) then v277=v276:FindFirstChild("Humanoid");v278=v276:FindFirstChild("HumanoidRootPart");v279=v15.Character and v15.Character:FindFirstChild("HumanoidRootPart") ;if  not (v277 and v278 and v279) then return false;end v275=2;end if (v275==(974 -(357 + 615))) then local v535=0 + 0 ;while true do if (v535==1) then return true;end if (v535==(0 -0)) then if (v277.Health<=0) then return false;end if (v9:HasTag(v276,"Invulnerable") or v9:HasTag(v276,"SpeedTrail")) then return false;end v535=1 + 0 ;end end end v341=1;end if (v341==(2 -1)) then if (v275==(0 + 0)) then if ( not v274 or (v274==v15)) then return false;end v276=v274.Character;if ( not v276 or (v276.Parent~=v8)) then return false;end if (v274.Team and (v274.Team==v15.Team)) then return false;end v275=1 + 0 ;end break;end end end end local function v105(v280) local v281=0;local v282;local v283;local v284;local v285;local v286;while true do if ((2 + 1)==v281) then if v286 then local v495=0;while true do if (v495==0) then v25(v280);v95=v285;v495=1302 -(384 + 917) ;end if (v495==(698 -(128 + 569))) then return true;end end end return false;end if (v281==(1544 -(1407 + 136))) then local v428=1887 -(687 + 1200) ;while true do if (v428==(1710 -(556 + 1154))) then if  not (v283 and v284) then return false;end if  not v103(v283.Position,v284.Position,v280.Character) then return false;end v428=1;end if (v428==1) then if  not v102(v284.Position) then return false;end v281=2;break;end end end if (v281==(0 -0)) then v282=v15.Character;v283=v282 and v282:FindFirstChild("HumanoidRootPart") ;v284=v280.Character and v280.Character:FindFirstChild("HumanoidRootPart") ;v281=1;end if (v281==2) then v285=tick();if ((v285-v95)<v94) then return false;end v286=v280.Character:FindFirstChild("LowerTorso") or v280.Character:FindFirstChild("UpperTorso") or v280.Character:FindFirstChild("Head") ;v281=3;end end end v10.Heartbeat:Connect(function() local v287=0;local v288;while true do if (v287==(97 -(9 + 86))) then for v455,v456 in pairs(v5:GetPlayers()) do if v104(v456) then if v105(v456) then break;end end end break;end if (v287==1) then v288=v15.Character;if  not v288 then return;end v287=423 -(275 + 146) ;end if (v287==0) then v101();if  not v90 then return;end v287=1;end end end);v11.InputBegan:Connect(function(v289,v290) local v291=0 + 0 ;while true do if (v291==0) then if v290 then return;end if (v91 and (v289.UserInputType==Enum.UserInputType.MouseButton1)) then local v496=0;local v497;local v498;while true do if (v496==(64 -(29 + 35))) then v497=tick();if ((v497-v95)<v94) then return;end v496=1;end if (v496==(8 -6)) then for v624,v625 in pairs(v5:GetPlayers()) do if v104(v625) then if v105(v625) then break;end end end break;end if (v496==(2 -1)) then v498=v15.Character;if  not v498 then return;end v496=8 -6 ;end end end break;end end end);local function v106() local v292=0;while true do if (v292==(0 + 0)) then if v97 then task.cancel(v97);end v97=task.spawn(function() while v91 do local v499=1012 -(53 + 959) ;local v500;while true do if (v499==(408 -(312 + 96))) then task.wait();v500=v8:FindFirstChild(v15.Name);v499=1 -0 ;end if (v499==(286 -(147 + 138))) then if v500 then local v645=899 -(813 + 86) ;local v646;while true do if (v645==(0 + 0)) then v646=v500:FindFirstChild("GunController");if v646 then v646.Parent=nil;end break;end end end break;end end end end);break;end end end local function v107() if v97 then task.cancel(v97);v97=nil;end end v89:Toggle({Title="Enable FOV Circle",Desc="Show FOV circle around your mouse",Default=false,Flag="EnableFovCircle",Callback=function(v293) v92=v293;end});v98=v89:Toggle({Title="Autoshoot FOV",Desc="Automatically shoots enemies in your FOV circle",Default=false,Flag="EnableAutoshootFov",Callback=function(v294) local v295=0 -0 ;while true do if (v295==(492 -(18 + 474))) then v90=v294;if v294 then if v99 then v99:Lock();end elseif v99 then v99:Unlock();end break;end end end});v99=v89:Toggle({Title="Silent Aim",Desc="Click to shoot enemies in FOV circle",Default=false,Flag="EnableManualShootToggle",Callback=function(v296) local v297=0;while true do if (0==v297) then v91=v296;if v296 then local v501=0 + 0 ;while true do if (v501==0) then if v98 then v98:Lock();end v106();break;end end else local v502=0;while true do if (v502==(0 -0)) then if v98 then v98:Unlock();end v107();break;end end end break;end end end});v89:Slider({Title="FOV Circle Size",Step=1091 -(860 + 226) ,Flag="FovCircleSizeSlider",Value={Min=338 -(121 + 182) ,Max=300,Default=100},Callback=function(v298) v93=v298;end});v89:Slider({Title="FOV Autoshoot Cooldown",Step=0.1 + 0 ,Flag="FovAutoshootCooldownSlider",Value={Min=0,Max=1245 -(988 + 252) ,Default=1 + 1 },Callback=function(v299) v94=v299;end});local v108=v2:Tab({Title="Misc",Icon="folder",Locked=false});getgenv().original_speed=6 + 10 ;getgenv().speed_enabled=false;getgenv().current_speed=1986 -(49 + 1921) ;getgenv().remove_gun_cooldown=false;v108:Toggle({Title="Auto Spin",Desc="Auto spins for you when not in match",Default=false,Callback=function(v300) local v301=0;while true do if (v301==(890 -(223 + 667))) then getgenv().autoSpin=v300;task.spawn(function() while getgenv().autoSpin do local v503=52 -(51 + 1) ;local v504;while true do if (v503==(0 -0)) then v504=0;while true do if (v504==0) then if  not v15:GetAttribute("Match") then local v710=0;local v711;while true do if (v710==0) then v711=require(game:GetService("ReplicatedStorage").Dailies.SpinnerService);v711.Spin();break;end end end task.wait(0.1 -0 );break;end end break;end end end end);break;end end end});v108:Toggle({Title="Noclip",Desc="Allows you to walk through walls",Default=false,Callback=function(v302) local v303=1125 -(146 + 979) ;while true do if (v303==0) then getgenv().noclip=v302;if v302 then local v505=0;local v506;while true do if (v505==1) then v506=game:GetService("RunService").Stepped:Connect(function() local v626=0;local v627;while true do if (v626==(1 + 0)) then if v627 then for v767,v768 in ipairs(v627:GetDescendants()) do if v768:IsA("BasePart") then v768.CanCollide=false;end end end break;end if (0==v626) then if  not getgenv().noclip then local v745=605 -(311 + 294) ;while true do if (v745==0) then v506:Disconnect();return;end end end v627=v15.Character;v626=1;end end end);break;end if (v505==(0 -0)) then v28(true);v506=nil;v505=1 + 0 ;end end else v28(false);end break;end end end});v108:Toggle({Title="Enable Speed Changer",Desc="Changes your walk speed",Icon="check",Default=false,Flag="SpeedChangerToggle",Callback=function(v304) local v305=1443 -(496 + 947) ;while true do if (v305==(1358 -(1233 + 125))) then getgenv().speed_enabled=v304;if v304 then task.spawn(function() while getgenv().speed_enabled do local v564=0 + 0 ;local v565;local v566;while true do if (v564==1) then if (v566 and (v566.WalkSpeed~=getgenv().current_speed)) then v566.WalkSpeed=getgenv().current_speed;end task.wait(0.1);break;end if (v564==(0 + 0)) then v565=v15.Character;v566=v565 and v565:FindFirstChild("Humanoid") ;v564=1 + 0 ;end end end end);else local v507=1645 -(963 + 682) ;local v508;local v509;local v510;while true do if (v507==(0 + 0)) then v508=1504 -(504 + 1000) ;v509=nil;v507=1 + 0 ;end if (v507==1) then v510=nil;while true do if (v508==(1 + 0)) then if v510 then v510.WalkSpeed=getgenv().original_speed;end break;end if (v508==0) then v509=v15.Character;v510=v509 and v509:FindFirstChild("Humanoid") ;v508=1 + 0 ;end end break;end end end break;end end end});v108:Slider({Title="Walk Speed",Step=1 -0 ,Value={Min=14 + 2 ,Max=117 + 83 ,Default=16},Flag="SpeedChangerSlider",Callback=function(v306) local v307=0;while true do if (v307==(182 -(156 + 26))) then getgenv().current_speed=v306;if getgenv().speed_enabled then local v511=0 + 0 ;local v512;local v513;local v514;while true do if (v511==1) then v514=nil;while true do if ((1 -0)==v512) then if v514 then v514.WalkSpeed=v306;end break;end if ((164 -(149 + 15))==v512) then v513=v15.Character;v514=v513 and v513:FindFirstChild("Humanoid") ;v512=1;end end break;end if (v511==(960 -(890 + 70))) then v512=0;v513=nil;v511=118 -(39 + 78) ;end end end break;end end end});v15.CharacterAdded:Connect(function(v308) local v309=482 -(14 + 468) ;local v310;while true do if (v309==(0 -0)) then v310=0 -0 ;while true do if ((0 + 0)==v310) then task.wait(0.2 + 0 );if getgenv().speed_enabled then local v593=0 + 0 ;local v594;while true do if (v593==(0 + 0)) then v594=v308:WaitForChild("Humanoid");v594.WalkSpeed=getgenv().current_speed;break;end end end break;end end break;end end end);local v113=v2:Tab({Title="Settings",Icon="settings",Locked=false});local v114={};for v311 in pairs(v1.Themes) do table.insert(v114,v311);end table.sort(v114);v113:Dropdown({Title="Themes",Desc="Select a theme",Flag="SelectedTheme",Values=v114,Value="Dark",Callback=function(v312) v1:SetTheme(v312);end});v113:Keybind({Title="Keybind",Desc="Keybind to open ui",Value="LeftControl",Flag="KeybindOpenWindow",Callback=function(v313) v2:SetToggleKey(Enum.KeyCode[v313]);end});v113:Space();local v115=v2.ConfigManager;local v116="default";local v117=v113:Input({Title="Config Name",Value=v116,Callback=function(v314) v116=v314;end});local v118=v113:Dropdown({Title="All Configs",Values=v115:AllConfigs(),Callback=function(v315) local v316=0;local v317;while true do if (v316==(0 + 0)) then v317=0 -0 ;while true do if (0==v317) then v116=v315;v117:Set(v315);break;end end break;end end end});v113:Button({Title="Save Config",Callback=function() local v318=0;local v319;while true do if (v318==(0 + 0)) then v319=v115:CreateConfig(v116);if v319:Save() then v118:Refresh(v115:AllConfigs());end break;end end end});v113:Button({Title="Load Config",Callback=function() local v320=0 -0 ;local v321;while true do if (v320==(0 + 0)) then v321=v115:CreateConfig(v116);if v321:Load() then end break;end end end});v113:Button({Title="Delete Config",Callback=function() local v322=51 -(12 + 39) ;local v323;while true do if (v322==(1 + 0)) then v118:Refresh(v115:AllConfigs());break;end if (v322==(0 -0)) then v323=v115:CreateConfig(v116);v323:Delete();v322=1;end end end});v1:Notify({Title="Welcome to Ruleless Enchantment MVSD",Duration=53 -38 ,Icon="rbxassetid://99922487160426"});
